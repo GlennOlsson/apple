@@ -86,6 +86,8 @@
 		9768C2351F4B7BAC00FD499B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9768C2341F4B7BAC00FD499B /* AppDelegate.swift */; };
 		9768C2371F4B7E9900FD499B /* Preference.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9768C2361F4B7E9900FD499B /* Preference.storyboard */; };
 		9768C23B1F4B7F6300FD499B /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9768C23A1F4B7F6300FD499B /* Preference.swift */; };
+		97697163241592B400B260F6 /* OPDSRefreshOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97697162241592B400B260F6 /* OPDSRefreshOperation.swift */; };
+		976971652415957700B260F6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971642415957700B260F6 /* Log.swift */; };
 		9779E7A22379230F0058DC98 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9779E7A12379230F0058DC98 /* SearchController.swift */; };
 		977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB11F9E6A43009A8703 /* SearchResult.swift */; };
 		977D7BB61F9E6A43009A8703 /* ZimMultiReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB21F9E6A43009A8703 /* ZimMultiReader.mm */; };
@@ -580,6 +582,8 @@
 		9768C2341F4B7BAC00FD499B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9768C2361F4B7E9900FD499B /* Preference.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Preference.storyboard; sourceTree = "<group>"; };
 		9768C23A1F4B7F6300FD499B /* Preference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
+		97697162241592B400B260F6 /* OPDSRefreshOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDSRefreshOperation.swift; sourceTree = "<group>"; };
+		976971642415957700B260F6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		9779E7A12379230F0058DC98 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		977D7BB01F9E6A43009A8703 /* ZimMultiReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZimMultiReader.h; sourceTree = "<group>"; };
 		977D7BB11F9E6A43009A8703 /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
@@ -777,8 +781,10 @@
 		970EC39E23BCE7F5008DCA27 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				9769715F24158DE100B260F6 /* OPDS */,
 				970EC39C23BCE2B5008DCA27 /* BookmarkManager.swift */,
 				970EC3A023BCEC84008DCA27 /* Parser.swift */,
+				976971642415957700B260F6 /* Log.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1291,6 +1297,14 @@
 			path = Storyboard;
 			sourceTree = "<group>";
 		};
+		9769715F24158DE100B260F6 /* OPDS */ = {
+			isa = PBXGroup;
+			children = (
+				97697162241592B400B260F6 /* OPDSRefreshOperation.swift */,
+			);
+			path = OPDS;
+			sourceTree = "<group>";
+		};
 		977D7BAF1F9E6A43009A8703 /* ZimMultiReader */ = {
 			isa = PBXGroup;
 			children = (
@@ -1751,6 +1765,7 @@
 			files = (
 				97A68832207D4D6700DBBE0D /* RealmConfig.swift in Sources */,
 				972E6F641FA11A6100F5C927 /* RoundedButton.swift in Sources */,
+				976971652415957700B260F6 /* Log.swift in Sources */,
 				977D7BB61F9E6A43009A8703 /* ZimMultiReader.mm in Sources */,
 				97252103200D3C4B00B60A80 /* HUDController.swift in Sources */,
 				977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */,
@@ -1761,6 +1776,7 @@
 				97CA4A7220A21D24008CEA6D /* LibraryLanguageController.swift in Sources */,
 				979D6E0C20B34FD700B08DE7 /* BookmarkController.swift in Sources */,
 				97A04DFD23CBBA84006DE063 /* RootSplitViewController.swift in Sources */,
+				97697163241592B400B260F6 /* OPDSRefreshOperation.swift in Sources */,
 				97B4ADF92392BA3C00264AF6 /* MapController.swift in Sources */,
 				973B8012239066D0008CC8CE /* SceneDelegate.swift in Sources */,
 				97DBCF9D203CA254004EE274 /* SettingExternalLinkController.swift in Sources */,
