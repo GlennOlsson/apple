@@ -88,6 +88,9 @@
 		9768C23B1F4B7F6300FD499B /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9768C23A1F4B7F6300FD499B /* Preference.swift */; };
 		97697163241592B400B260F6 /* OPDSRefreshOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97697162241592B400B260F6 /* OPDSRefreshOperation.swift */; };
 		976971652415957700B260F6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971642415957700B260F6 /* Log.swift */; };
+		9769716F2415D15900B260F6 /* OPDSStreamParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9769716E2415D15900B260F6 /* OPDSStreamParser.mm */; };
+		976971722415D84700B260F6 /* OPDSStreamParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971712415D84700B260F6 /* OPDSStreamParser.swift */; };
+		976971752415D95800B260F6 /* OPDSStreamZimFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = 976971742415D95800B260F6 /* OPDSStreamZimFile.mm */; };
 		9779E7A22379230F0058DC98 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9779E7A12379230F0058DC98 /* SearchController.swift */; };
 		977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB11F9E6A43009A8703 /* SearchResult.swift */; };
 		977D7BB61F9E6A43009A8703 /* ZimMultiReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB21F9E6A43009A8703 /* ZimMultiReader.mm */; };
@@ -584,6 +587,12 @@
 		9768C23A1F4B7F6300FD499B /* Preference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
 		97697162241592B400B260F6 /* OPDSRefreshOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDSRefreshOperation.swift; sourceTree = "<group>"; };
 		976971642415957700B260F6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		9769716D2415D15900B260F6 /* OPDSStreamParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OPDSStreamParser.h; sourceTree = "<group>"; };
+		9769716E2415D15900B260F6 /* OPDSStreamParser.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OPDSStreamParser.mm; sourceTree = "<group>"; };
+		976971702415D1C500B260F6 /* Kiwix-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kiwix-Bridging-Header.h"; sourceTree = "<group>"; };
+		976971712415D84700B260F6 /* OPDSStreamParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDSStreamParser.swift; sourceTree = "<group>"; };
+		976971732415D95800B260F6 /* OPDSStreamZimFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OPDSStreamZimFile.h; sourceTree = "<group>"; };
+		976971742415D95800B260F6 /* OPDSStreamZimFile.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OPDSStreamZimFile.mm; sourceTree = "<group>"; };
 		9779E7A12379230F0058DC98 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		977D7BB01F9E6A43009A8703 /* ZimMultiReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZimMultiReader.h; sourceTree = "<group>"; };
 		977D7BB11F9E6A43009A8703 /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
@@ -825,6 +834,7 @@
 		973BCD1F1CEB412E00F10B44 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				976971702415D1C500B260F6 /* Kiwix-Bridging-Header.h */,
 				9754492D240C66D500E4E949 /* Dependencies */,
 				97A6882C207D3D5300DBBE0D /* Model */,
 				97DF259E1D6F9942001648A3 /* Network */,
@@ -1301,6 +1311,11 @@
 			isa = PBXGroup;
 			children = (
 				97697162241592B400B260F6 /* OPDSRefreshOperation.swift */,
+				9769716D2415D15900B260F6 /* OPDSStreamParser.h */,
+				9769716E2415D15900B260F6 /* OPDSStreamParser.mm */,
+				976971712415D84700B260F6 /* OPDSStreamParser.swift */,
+				976971732415D95800B260F6 /* OPDSStreamZimFile.h */,
+				976971742415D95800B260F6 /* OPDSStreamZimFile.mm */,
 			);
 			path = OPDS;
 			sourceTree = "<group>";
@@ -1770,6 +1785,7 @@
 				97252103200D3C4B00B60A80 /* HUDController.swift in Sources */,
 				977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */,
 				97A2180C2024EC3800D1E67B /* SettingFontSizeController.swift in Sources */,
+				976971752415D95800B260F6 /* OPDSStreamZimFile.mm in Sources */,
 				9702BE221F97FA4300E6B4EE /* LibraryRefreshOperation.swift in Sources */,
 				9742596920FCE7BA000BB88A /* SettingLibraryController.swift in Sources */,
 				97242E2B2093B38A00AA4436 /* Preference.swift in Sources */,
@@ -1807,6 +1823,7 @@
 				97F4D10620AB80740038FC87 /* LibraryZimFileDetailController.swift in Sources */,
 				97F4210E22EE5590001E41F9 /* FileImportController.swift in Sources */,
 				97AC121520879252004779D1 /* SearchQueue.swift in Sources */,
+				976971722415D84700B260F6 /* OPDSStreamParser.swift in Sources */,
 				9719F60620DAF82200B5D0EB /* Settings.swift in Sources */,
 				972521012009616B00B60A80 /* EmptyContentView.swift in Sources */,
 				97A36C571F8D5FCD0079B452 /* LibraryController.swift in Sources */,
@@ -1823,6 +1840,7 @@
 				97E429901FBDF48800ABE62E /* DirectoryMonitor.swift in Sources */,
 				97A36C511F8D4FB80079B452 /* VisualEffectShadowView.swift in Sources */,
 				97CE15AF23B2668500378D9F /* TableViewSectionFooterLabel.swift in Sources */,
+				9769716F2415D15900B260F6 /* OPDSStreamParser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
