@@ -16,6 +16,8 @@ import RealmSwift
  The detail controller could be detail of a zim file or all zim files belong to one category.
  */
 class LibraryController: UISplitViewController, UISplitViewControllerDelegate {
+    let queue = OperationQueue()
+    
     init() {
         super.init(nibName: nil, bundle: nil)
         
@@ -35,6 +37,11 @@ class LibraryController: UISplitViewController, UISplitViewControllerDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        queue.addOperation(OPDSRefreshOperation())
     }
     
     func splitViewController(_ splitViewController: UISplitViewController,
