@@ -10,11 +10,15 @@ import os
 
 class OPDSRefreshOperation: Operation {
     let progress = Progress(totalUnitCount: 10)
-    private(set) var error: OPDSRefreshError? = nil
+    private(set) var error: OPDSRefreshError?
     
     override func main() {
         do {
             let data = try fetchData()
+            
+            let parser = OPDSStreamParser(data: data)
+            parser.parse()
+            
         } catch let error as OPDSRefreshError {
             self.error = error
         } catch {
@@ -31,7 +35,7 @@ class OPDSRefreshOperation: Operation {
         
         let semaphore = DispatchSemaphore(value: 0)
         let url = URL(string: "http://library.kiwix.org/catalog/root.xml")!
-        let request = URLRequest(url: url, cachePolicy: .returnCacheDataDontLoad, timeoutInterval: 30)
+        let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)
         
         let dataTask = URLSession.shared.dataTask(with: request) {
             data = $0
