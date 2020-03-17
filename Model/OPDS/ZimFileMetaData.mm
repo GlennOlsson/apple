@@ -6,8 +6,8 @@
 //  Copyright © 2020 Chris Li. All rights reserved.
 //
 
-#import "OPDSStreamZimFile.h"
+#import "ZimFileMetaData.h"
 
-@implementation OPDSStreamZimFile
+@implementation ZimFileMetaData
 
 @end

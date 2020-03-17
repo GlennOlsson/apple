@@ -8,7 +8,7 @@
 
 extension OPDSStreamParser {
     var zimFileIDs: [String] { get{ return __getZimFileIDs().compactMap({$0 as? String}) } }
-    func getZimFile(id: String) -> OPDSStreamZimFile? {
-        return __getZimFile(id)
+    func getZimFileMetaData(id: String) -> ZimFileMetaData? {
+        return __getZimFileMetaData(id)
     }
 }

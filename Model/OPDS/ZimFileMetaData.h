@@ -1,5 +1,5 @@
 //
-//  OPDSStreamZimFile.h
+//  ZimFileMetaData.h
 //  Kiwix
 //
 //  Created by Chris Li on 3/8/20.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OPDSStreamZimFile : NSObject
+@interface ZimFileMetaData : NSObject
 
 @property (nonatomic, retain) NSString *identifier;
 @property (nonatomic, retain) NSString *name;

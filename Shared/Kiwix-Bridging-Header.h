@@ -4,4 +4,4 @@
 
 #import "ZimMultiReader.h"
 #import "OPDSStreamParser.h"
-#import "OPDSStreamZimFile.h"
+#import "ZimFileMetaData.h"

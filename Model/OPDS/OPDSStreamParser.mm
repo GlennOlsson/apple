@@ -1,5 +1,5 @@
 //
-//  OPDSStreamParser.m
+//  OPDSStreamParser.mm
 //  Kiwix
 //
 //  Created by Chris Li on 3/8/20.
@@ -49,11 +49,11 @@ kiwix::Library *library = nullptr;
     return identifiers;
 }
 
-- (OPDSStreamZimFile *)getZimFile:(NSString *)identifier {
+- (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
     std::string identifierC = [identifier cStringUsingEncoding:NSUTF8StringEncoding];
     try {
         kiwix::Book book = library->getBookById(identifierC);
-        OPDSStreamZimFile *zimFile = [[OPDSStreamZimFile alloc] init];
+        ZimFileMetaData *zimFile = [[ZimFileMetaData alloc] init];
         
         zimFile.identifier = [NSString stringWithUTF8String:book.getId().c_str()];
         zimFile.name = [NSString stringWithUTF8String:book.getName().c_str()];

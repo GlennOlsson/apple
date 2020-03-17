@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OPDSStreamZimFile.h"
+#import "ZimFileMetaData.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype _Nonnull)initWithData:(NSData *_Nonnull)data;
 - (void)parse;
 - (NSArray *_Nonnull)getZimFileIDs NS_REFINED_FOR_SWIFT;
-- (OPDSStreamZimFile *_Nullable)getZimFile:(NSString *_Nonnull)identifier NS_REFINED_FOR_SWIFT;
+- (ZimFileMetaData *_Nullable)getZimFileMetaData:(NSString *_Nonnull)identifier NS_REFINED_FOR_SWIFT;
 
 @end
 
