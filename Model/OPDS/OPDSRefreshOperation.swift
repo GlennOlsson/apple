@@ -7,10 +7,20 @@
 //
 
 import os
+import RealmSwift
+import SwiftyUserDefaults
 
 class OPDSRefreshOperation: Operation {
     let progress = Progress(totalUnitCount: 10)
+    private let updateExisting: Bool
+    
+    private(set) var hasUpdates = false
     private(set) var error: OPDSRefreshError?
+    
+    override init() {
+        self.updateExisting = false
+        super.init()
+    }
     
     override func main() {
         do {
@@ -18,6 +28,12 @@ class OPDSRefreshOperation: Operation {
             
             let parser = OPDSStreamParser(data: data)
             parser.parse()
+            
+            
+            
+            
+            
+            os_log("OPDSRefreshOperation success: %d", log: Log.OPDS, type: .default)
             
         } catch let error as OPDSRefreshError {
             self.error = error
@@ -57,10 +73,51 @@ class OPDSRefreshOperation: Operation {
             throw OPDSRefreshError.retrieve(localizedDescription: description)
         }
     }
+    
+    private func processData(parser: OPDSStreamParser) throws {
+        let zimFileIDs = Set(parser.zimFileIDs)
+        do {
+            let database = try Realm(configuration: Realm.defaultConfig)
+            try database.write {
+                // remove old zimFiles
+                let predicate = NSPredicate(format: "NOT id IN %@ AND stateRaw == %@",
+                                            zimFileIDs, ZimFile.State.cloud.rawValue)
+                database.objects(ZimFile.self).filter(predicate).forEach({
+                    database.delete($0)
+                    self.hasUpdates = true
+                })
+
+                // upsert zimFiles
+                for zimFileID in zimFileIDs {
+                    if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
+                        if updateExisting {
+//                            update(zimFile: zimFile, meta: meta)
+                        }
+                    } else {
+//                        let zimFile = create(database: database, id: zimFileID, meta: meta)
+//                        zimFile.state = .cloud
+//                        self.hasUpdates = true
+                    }
+                }
+            }
+
+            // apply language filter if library has never been refreshed
+            if Defaults[.libraryLastRefreshTime] == nil, let code = Locale.current.languageCode {
+                Defaults[.libraryFilterLanguageCodes] = [code]
+            }
+
+            // update last library refresh time
+            Defaults[.libraryLastRefreshTime] = Date()
+            
+        } catch {
+            throw OPDSRefreshError.process
+        }
+    }
 }
 
 
 enum OPDSRefreshError: LocalizedError {
     case retrieve(localizedDescription: String)
     case parse
+    case process
 }
