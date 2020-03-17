@@ -8,17 +8,22 @@
 
 #import "OPDSStreamParser.h"
 #include "book.h"
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
 #include "library.h"
 #include "manager.h"
+#pragma clang diagnostic pop
 
 @implementation OPDSStreamParser
 
-kiwix::Library *library = new kiwix::Library();
+kiwix::Library *library = nullptr;
 
 - (instancetype _Nonnull)initWithData:(NSData *_Nonnull)data {
     self = [super init];
     if (self) {
         self.data = data;
+        library = new kiwix::Library();
     }
     return self;
 }
