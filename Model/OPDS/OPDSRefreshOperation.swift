@@ -29,7 +29,7 @@ class OPDSRefreshOperation: Operation {
             let parser = OPDSStreamParser(data: data)
             parser.parse()
             
-            
+//            try processData(parser: parser)
             
             
             
@@ -89,6 +89,7 @@ class OPDSRefreshOperation: Operation {
 
                 // upsert zimFiles
                 for zimFileID in zimFileIDs {
+                    let meta = parser.getZimFileMetaData(id: zimFileID)
                     if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
                         if updateExisting {
 //                            update(zimFile: zimFile, meta: meta)
@@ -108,7 +109,6 @@ class OPDSRefreshOperation: Operation {
 
             // update last library refresh time
             Defaults[.libraryLastRefreshTime] = Date()
-            
         } catch {
             throw OPDSRefreshError.process
         }
