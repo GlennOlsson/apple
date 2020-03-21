@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, retain) NSData *data;
 
 - (instancetype _Nonnull)initWithData:(NSData *_Nonnull)data;
-- (void)parse;
+- (void)parseData:(NSString *)data error:(NSError **)error;
 - (NSArray *_Nonnull)getZimFileIDs NS_REFINED_FOR_SWIFT;
 - (ZimFileMetaData *_Nullable)getZimFileMetaData:(NSString *_Nonnull)identifier NS_REFINED_FOR_SWIFT;
 

@@ -24,16 +24,25 @@ class OPDSRefreshOperation: Operation {
     
     override func main() {
         do {
+            os_log("OPDSRefreshOperation started.", log: Log.OPDS, type: .debug)
+            
+            // refresh the library
             let data = try fetchData()
+            let parser = parseData(data: data)
+            try processData(parser: parser)
             
-            let parser = OPDSStreamParser(data: data)
-            parser.parse()
+            // apply language filter if library has never been refreshed
+            if Defaults[.libraryLastRefreshTime] == nil, let code = Locale.current.languageCode {
+                Defaults[.libraryFilterLanguageCodes] = [code]
+            }
+
+            // update last library refresh time
+            Defaults[.libraryLastRefreshTime] = Date()
             
-//            try processData(parser: parser)
-            
-            
-            
-            os_log("OPDSRefreshOperation success: %d", log: Log.OPDS, type: .default)
+            os_log("OPDSRefreshOperation success, zim files count: %d",
+                   log: Log.OPDS,
+                   type: .default,
+                   parser.zimFileIDs.count)
             
         } catch let error as OPDSRefreshError {
             self.error = error
@@ -50,7 +59,7 @@ class OPDSRefreshOperation: Operation {
         var error: Swift.Error?
         
         let semaphore = DispatchSemaphore(value: 0)
-        let url = URL(string: "http://library.kiwix.org/catalog/root.xml")!
+        let url = URL(string: "https://library.kiwix.org/catalog/root.xml")!
         let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)
         
         let dataTask = URLSession.shared.dataTask(with: request) {
@@ -74,6 +83,14 @@ class OPDSRefreshOperation: Operation {
         }
     }
     
+    private func parseData(data: Data) -> OPDSStreamParser {
+        let parser = OPDSStreamParser(data: data)
+        parser.parseData(<#T##data: String##String#>, error: <#T##NSErrorPointer#>)
+        return parser
+    }
+    
+    /// Process the parsed OPDS stream
+    /// - Throws: OPDSRefreshError, the error happened during OPDS stream processing
     private func processData(parser: OPDSStreamParser) throws {
         let zimFileIDs = Set(parser.zimFileIDs)
         do {
@@ -87,31 +104,44 @@ class OPDSRefreshOperation: Operation {
                     self.hasUpdates = true
                 })
 
-                // upsert zimFiles
+                // upsert new and existing zimFiles
                 for zimFileID in zimFileIDs {
-                    let meta = parser.getZimFileMetaData(id: zimFileID)
+                    guard let meta = parser.getZimFileMetaData(id: zimFileID) else { continue }
                     if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
-                        if updateExisting {
-//                            update(zimFile: zimFile, meta: meta)
-                        }
+                        if updateExisting { update(zimFile: zimFile, meta: meta) }
                     } else {
-//                        let zimFile = create(database: database, id: zimFileID, meta: meta)
-//                        zimFile.state = .cloud
-//                        self.hasUpdates = true
+                        let zimFile = ZimFile()
+                        update(zimFile: zimFile, meta: meta)
+                        zimFile.state = .cloud
+                        database.add(zimFile)
+                        self.hasUpdates = true
                     }
                 }
             }
-
-            // apply language filter if library has never been refreshed
-            if Defaults[.libraryLastRefreshTime] == nil, let code = Locale.current.languageCode {
-                Defaults[.libraryFilterLanguageCodes] = [code]
-            }
-
-            // update last library refresh time
-            Defaults[.libraryLastRefreshTime] = Date()
         } catch {
             throw OPDSRefreshError.process
         }
+    }
+    
+    private func update(zimFile: ZimFile, meta: ZimFileMetaData) {
+        zimFile.id = meta.identifier
+        zimFile.title = meta.title
+        zimFile.pid = meta.name
+        zimFile.bookDescription = meta.fileDescription
+        
+//        zimFile.category = meta.category
+        zimFile.languageCode = meta.languageCode
+//        zimFile.creationDate =
+        zimFile.creator = meta.creator
+        zimFile.publisher = meta.publisher
+        
+        zimFile.remoteURL = meta.url
+        // icon url
+        
+//        zimFile.fileSize = meta.size
+//        zimFile.articleCount = meta.articleCount
+//        zimFile.mediaCount = meta.mediaCount
+        
     }
 }
 

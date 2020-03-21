@@ -33,12 +33,12 @@ kiwix::Library *library = nullptr;
     delete library;
 }
 
-- (void)parse {
+- (void)parseWithData:(NSString *)data error:(NSError **)error {
     NSString *streamContent = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
     
     std::shared_ptr<kiwix::Manager> manager = std::make_shared<kiwix::Manager>(library);
     manager->readOpds([streamContent cStringUsingEncoding:NSUTF8StringEncoding],
-                      [@"http://library.kiwix.org" cStringUsingEncoding:NSUTF8StringEncoding]);
+                      [@"https://library.kiwix.org" cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (NSArray *)getZimFileIDs {
