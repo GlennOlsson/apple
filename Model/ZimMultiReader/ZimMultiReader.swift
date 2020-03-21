@@ -17,11 +17,6 @@ extension ZimMultiReader {
     func add(url: URL) {__add(by: url)}
     func remove(id: ZimFileID) {__remove(byID: id)}
     
-    func hasEmbeddedIndex(id: ZimFileID) -> Bool {return __hasEmbeddedIndex(id)}
-    
-    @available(*, deprecated, message: "External index is no longer supported")
-    func hasExternalIndex(id: ZimFileID) -> Bool {return __hasExternalIndex(id)}
-    
     func getRedirectedPath(zimFileID: ZimFileID, contentPath: String) -> String? {
         return __getRedirectedPath(zimFileID, contentPath: contentPath)
     }

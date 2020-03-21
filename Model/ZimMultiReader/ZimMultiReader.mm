@@ -90,22 +90,6 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     }
 }
 
-# pragma mark - check index
-
-- (BOOL)hasEmbeddedIndex:(NSString *_Nonnull)zimFileID {
-    auto found = self.readers.find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
-        return NO;
-    } else {
-        std::shared_ptr<kiwix::Reader> reader = found->second;
-        return reader->hasFulltextIndex();
-    }
-}
-
-- (BOOL)hasExternalIndex:(NSString *_Nonnull)zimFileID {
-    return NO;
-}
-
 # pragma mark - check redirection
 
 - (NSString *_Nullable)getRedirectedPath:(NSString *_Nonnull)zimFileID contentPath:(NSString *_Nonnull)contentPath {
