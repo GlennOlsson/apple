@@ -85,7 +85,7 @@ class OPDSRefreshOperation: Operation {
     
     private func parseData(data: Data) -> OPDSStreamParser {
         let parser = OPDSStreamParser(data: data)
-        parser.parseData(<#T##data: String##String#>, error: <#T##NSErrorPointer#>)
+        parser.parse()
         return parser
     }
     

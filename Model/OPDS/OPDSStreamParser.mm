@@ -33,7 +33,7 @@ kiwix::Library *library = nullptr;
     delete library;
 }
 
-- (void)parseWithData:(NSString *)data error:(NSError **)error {
+- (void)parse {
     NSString *streamContent = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
     
     std::shared_ptr<kiwix::Manager> manager = std::make_shared<kiwix::Manager>(library);
