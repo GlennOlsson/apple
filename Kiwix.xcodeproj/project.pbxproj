@@ -79,7 +79,7 @@
 		976971652415957700B260F6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971642415957700B260F6 /* Log.swift */; };
 		9769716F2415D15900B260F6 /* OPDSStreamParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9769716E2415D15900B260F6 /* OPDSStreamParser.mm */; };
 		976971722415D84700B260F6 /* OPDSStreamParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971712415D84700B260F6 /* OPDSStreamParser.swift */; };
-		976971752415D95800B260F6 /* ZimFileMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 976971742415D95800B260F6 /* ZimFileMetaData.m */; };
+		976971752415D95800B260F6 /* ZimFileMetaData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 976971742415D95800B260F6 /* ZimFileMetaData.mm */; };
 		9779E7A22379230F0058DC98 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9779E7A12379230F0058DC98 /* SearchController.swift */; };
 		977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB11F9E6A43009A8703 /* SearchResult.swift */; };
 		977D7BB61F9E6A43009A8703 /* ZimMultiReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB21F9E6A43009A8703 /* ZimMultiReader.mm */; };
@@ -581,7 +581,7 @@
 		976971702415D1C500B260F6 /* Kiwix-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kiwix-Bridging-Header.h"; sourceTree = "<group>"; };
 		976971712415D84700B260F6 /* OPDSStreamParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDSStreamParser.swift; sourceTree = "<group>"; };
 		976971732415D95800B260F6 /* ZimFileMetaData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZimFileMetaData.h; sourceTree = "<group>"; };
-		976971742415D95800B260F6 /* ZimFileMetaData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZimFileMetaData.m; sourceTree = "<group>"; };
+		976971742415D95800B260F6 /* ZimFileMetaData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ZimFileMetaData.mm; sourceTree = "<group>"; };
 		9779E7A12379230F0058DC98 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		977D7BB01F9E6A43009A8703 /* ZimMultiReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZimMultiReader.h; sourceTree = "<group>"; };
 		977D7BB11F9E6A43009A8703 /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
@@ -1315,7 +1315,7 @@
 				9769716E2415D15900B260F6 /* OPDSStreamParser.mm */,
 				976971712415D84700B260F6 /* OPDSStreamParser.swift */,
 				976971732415D95800B260F6 /* ZimFileMetaData.h */,
-				976971742415D95800B260F6 /* ZimFileMetaData.m */,
+				976971742415D95800B260F6 /* ZimFileMetaData.mm */,
 			);
 			path = OPDS;
 			sourceTree = "<group>";
@@ -1785,7 +1785,7 @@
 				97252103200D3C4B00B60A80 /* HUDController.swift in Sources */,
 				977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */,
 				97A2180C2024EC3800D1E67B /* SettingFontSizeController.swift in Sources */,
-				976971752415D95800B260F6 /* ZimFileMetaData.m in Sources */,
+				976971752415D95800B260F6 /* ZimFileMetaData.mm in Sources */,
 				9702BE221F97FA4300E6B4EE /* LibraryRefreshOperation.swift in Sources */,
 				9742596920FCE7BA000BB88A /* SettingLibraryController.swift in Sources */,
 				97242E2B2093B38A00AA4436 /* Preference.swift in Sources */,

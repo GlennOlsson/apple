@@ -7,6 +7,7 @@
 //
 
 #import "OPDSStreamParser.h"
+#import "ZimFileMetaData.h"
 #include "book.h"
 
 #pragma clang diagnostic push
@@ -52,42 +53,44 @@ kiwix::Library *library = nullptr;
 
 - (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
     std::string identifierC = [identifier cStringUsingEncoding:NSUTF8StringEncoding];
-    try {
-        kiwix::Book book = library->getBookById(identifierC);
-        ZimFileMetaData *zimFile = [[ZimFileMetaData alloc] init];
+    kiwix::Book book = library->getBookById(identifierC);
+    return [[ZimFileMetaData alloc] initWithBook: &book];
+//    
+//    try {
+//        
         
-        zimFile.identifier = [NSString stringWithUTF8String:book.getId().c_str()];
-        zimFile.title = [NSString stringWithUTF8String:book.getTitle().c_str()];
-        zimFile.name = [NSString stringWithUTF8String:book.getName().c_str()];
-        zimFile.fileDescription = [NSString stringWithUTF8String:book.getDescription().c_str()];
-    
-        try {
-            zimFile.category = [NSString stringWithUTF8String:book.getTagStr("category").c_str()];
-        } catch (std::out_of_range e) {
-            zimFile.category = @"other";
-        }
+//        zimFile.identifier = [NSString stringWithUTF8String:book.getId().c_str()];
+//        zimFile.title = [NSString stringWithUTF8String:book.getTitle().c_str()];
+//        zimFile.name = [NSString stringWithUTF8String:book.getName().c_str()];
+//        zimFile.fileDescription = [NSString stringWithUTF8String:book.getDescription().c_str()];
+//
+//        try {
+//            zimFile.category = [NSString stringWithUTF8String:book.getTagStr("category").c_str()];
+//        } catch (std::out_of_range e) {
+//            zimFile.category = @"other";
+//        }
+//
+//        zimFile.languageCode = [NSString stringWithUTF8String:book.getName().c_str()];
+//        zimFile.creationDate = [NSString stringWithUTF8String:book.getDate().c_str()];
+//        zimFile.creator = [NSString stringWithUTF8String:book.getCreator().c_str()];
+//        zimFile.publisher = [NSString stringWithUTF8String:book.getPublisher().c_str()];
 
-        zimFile.languageCode = [NSString stringWithUTF8String:book.getName().c_str()];
-        zimFile.creationDate = [NSString stringWithUTF8String:book.getDate().c_str()];
-        zimFile.creator = [NSString stringWithUTF8String:book.getCreator().c_str()];
-        zimFile.publisher = [NSString stringWithUTF8String:book.getPublisher().c_str()];
-
-        zimFile.url = [NSString stringWithUTF8String:book.getFaviconUrl().c_str()];
-        zimFile.iconURL = [NSString stringWithUTF8String:book.getFaviconUrl().c_str()];
-
-        zimFile.size = book.getSize();
-        zimFile.articleCount = book.getArticleCount();
-        zimFile.mediaCount = book.getMediaCount();
-
-        zimFile.hasPictures = book.getTagBool("pictures");
-        zimFile.hasVideos = book.getTagBool("videos");
-        zimFile.hasIndex = book.getTagBool("ftindex");
-        zimFile.hasDetails = book.getTagBool("details");
-        
-        return zimFile;
-    } catch (std::out_of_range) {
-        return nil;
-    }
+//        zimFile.url = [NSString stringWithUTF8String:book.getFaviconUrl().c_str()];
+//        zimFile.iconURL = [NSString stringWithUTF8String:book.getFaviconUrl().c_str()];
+//
+//        zimFile.size = book.getSize();
+//        zimFile.articleCount = book.getArticleCount();
+//        zimFile.mediaCount = book.getMediaCount();
+//
+//        zimFile.hasPictures = book.getTagBool("pictures");
+//        zimFile.hasVideos = book.getTagBool("videos");
+//        zimFile.hasIndex = book.getTagBool("ftindex");
+//        zimFile.hasDetails = book.getTagBool("details");
+//
+//        return zimFile;
+//    } catch (std::out_of_range) {
+//        return nil;
+//    }
 }
 
 @end

@@ -107,6 +107,7 @@ class OPDSRefreshOperation: Operation {
                 // upsert new and existing zimFiles
                 for zimFileID in zimFileIDs {
                     guard let meta = parser.getZimFileMetaData(id: zimFileID) else { continue }
+                    print(meta.identifier)
                     if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
                         if updateExisting { update(zimFile: zimFile, meta: meta) }
                     } else {
@@ -130,12 +131,12 @@ class OPDSRefreshOperation: Operation {
         zimFile.bookDescription = meta.fileDescription
         
 //        zimFile.category = meta.category
-        zimFile.languageCode = meta.languageCode
+//        zimFile.languageCode = meta.languageCode
 //        zimFile.creationDate =
-        zimFile.creator = meta.creator
-        zimFile.publisher = meta.publisher
+//        zimFile.creator = meta.creator
+//        zimFile.publisher = meta.publisher
         
-        zimFile.remoteURL = meta.url
+//        zimFile.remoteURL = meta.url
         // icon url
         
 //        zimFile.fileSize = meta.size
