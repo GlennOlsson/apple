@@ -790,6 +790,7 @@
 		970EC39E23BCE7F5008DCA27 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				977D7BAF1F9E6A43009A8703 /* ZimMultiReader */,
 				9769715F24158DE100B260F6 /* OPDS */,
 				970EC39C23BCE2B5008DCA27 /* BookmarkManager.swift */,
 				970EC3A023BCEC84008DCA27 /* Parser.swift */,
@@ -839,7 +840,6 @@
 				97A6882C207D3D5300DBBE0D /* Model */,
 				97DF259E1D6F9942001648A3 /* Network */,
 				9702BE201F97FA2600E6B4EE /* Procedure */,
-				977D7BAF1F9E6A43009A8703 /* ZimMultiReader */,
 				97598E08202B60E0005A9055 /* BackupManager.swift */,
 				97E4298F1FBDF48800ABE62E /* DirectoryMonitor.swift */,
 				97D00A7E1FBB92D400165629 /* TableOfContentItem.swift */,
