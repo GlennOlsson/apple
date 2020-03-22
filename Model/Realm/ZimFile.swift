@@ -1,6 +1,6 @@
 //
 //  ZimFile.swift
-//  iOS
+//  Kiwix
 //
 //  Created by Chris Li on 4/10/18.
 //  Copyright © 2018 Chris Li. All rights reserved.

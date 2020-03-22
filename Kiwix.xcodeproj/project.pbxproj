@@ -792,6 +792,7 @@
 			isa = PBXGroup;
 			children = (
 				976AA32A2427B72400576A96 /* Entities */,
+				97A6882C207D3D5300DBBE0D /* Realm */,
 				977D7BAF1F9E6A43009A8703 /* ZimMultiReader */,
 				9769715F24158DE100B260F6 /* OPDSStreamParser */,
 				976AA32B2427BD3300576A96 /* LibraryOperations */,
@@ -840,7 +841,6 @@
 			children = (
 				976971702415D1C500B260F6 /* Kiwix-Bridging-Header.h */,
 				9754492D240C66D500E4E949 /* Dependencies */,
-				97A6882C207D3D5300DBBE0D /* Model */,
 				97DF259E1D6F9942001648A3 /* Network */,
 				9702BE201F97FA2600E6B4EE /* Procedure */,
 				97598E08202B60E0005A9055 /* BackupManager.swift */,
@@ -1391,14 +1391,14 @@
 			sourceTree = "<group>";
 			wrapsLines = 0;
 		};
-		97A6882C207D3D5300DBBE0D /* Model */ = {
+		97A6882C207D3D5300DBBE0D /* Realm */ = {
 			isa = PBXGroup;
 			children = (
 				97A68831207D4D6700DBBE0D /* RealmConfig.swift */,
 				97A6882D207D3DE300DBBE0D /* ZimFile.swift */,
 				97242E152093A9AC00AA4436 /* Bookmark.swift */,
 			);
-			path = Model;
+			path = Realm;
 			sourceTree = "<group>";
 		};
 		97A996D81F62F3C5007A6282 /* View */ = {
