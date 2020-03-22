@@ -790,6 +790,7 @@
 		970EC39E23BCE7F5008DCA27 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				976AA32A2427B72400576A96 /* Entities */,
 				977D7BAF1F9E6A43009A8703 /* ZimMultiReader */,
 				9769715F24158DE100B260F6 /* OPDS */,
 				970EC39C23BCE2B5008DCA27 /* BookmarkManager.swift */,
@@ -1314,10 +1315,17 @@
 				9769716D2415D15900B260F6 /* OPDSStreamParser.h */,
 				9769716E2415D15900B260F6 /* OPDSStreamParser.mm */,
 				976971712415D84700B260F6 /* OPDSStreamParser.swift */,
+			);
+			path = OPDS;
+			sourceTree = "<group>";
+		};
+		976AA32A2427B72400576A96 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
 				976971732415D95800B260F6 /* ZimFileMetaData.h */,
 				976971742415D95800B260F6 /* ZimFileMetaData.mm */,
 			);
-			path = OPDS;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		977D7BAF1F9E6A43009A8703 /* ZimMultiReader */ = {
