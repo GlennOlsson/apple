@@ -8,21 +8,24 @@
 
 class LibraryBaseOperation: Operation {
     internal func updateZimFile(_ zimFile: ZimFile, meta: ZimFileMetaData) {
-        zimFile.pid = meta.name
+        zimFile.name = meta.name
         zimFile.title = meta.title
-        zimFile.bookDescription = meta.fileDescription
+        zimFile.fileDescription = meta.fileDescription
         zimFile.languageCode = meta.languageCode
         zimFile.categoryRaw = meta.category
         
         zimFile.creator = meta.creator ?? ""
         zimFile.publisher = meta.publisher ?? ""
         zimFile.creationDate = meta.creationDate ?? Date()
-        zimFile.remoteURL = meta.downloadURL?.absoluteString
-        zimFile.fileSize = meta.size?.int64Value ?? 0
-        zimFile.articleCount = meta.articleCount?.int64Value ?? 0
-        zimFile.mediaCount = meta.mediaCount?.int64Value ?? 0
+        zimFile.downloadURL = meta.downloadURL?.absoluteString
+        zimFile.faviconURL = meta.downloadURL?.absoluteString
+        zimFile.size.value = meta.size?.int64Value
+        zimFile.articleCount.value = meta.articleCount?.int64Value
+        zimFile.mediaCount.value = meta.mediaCount?.int64Value
         
-        zimFile.hasPicture = meta.hasPictures
-        
+        zimFile.hasDetails = meta.hasDetails
+        zimFile.hasIndex = meta.hasIndex
+        zimFile.hasPictures = meta.hasPictures
+        zimFile.hasVideos = meta.hasVideos
     }
 }

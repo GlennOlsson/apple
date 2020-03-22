@@ -110,7 +110,7 @@ class LibraryScanOperation: LibraryBaseOperation {
                 let localPredicate = NSPredicate(format: "stateRaw == %@", ZimFile.State.local.rawValue)
                 for zimFile in database.objects(ZimFile.self).filter(localPredicate) {
                     guard !zimFileIDs.contains(zimFile.id) else {continue}
-                    if let _ = zimFile.remoteURL {
+                    if let _ = zimFile.downloadURL {
                         zimFile.state = .cloud
                         zimFile.openInPlaceURLBookmark = nil
                     } else {

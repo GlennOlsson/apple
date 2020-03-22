@@ -30,7 +30,7 @@ class BookmarkManager {
             return [
                 "title": bookmark.title,
                 "url": url.absoluteString,
-                "thumbImageData": bookmark.thumbImageData ?? bookmark.zimFile?.icon ?? Data()
+                "thumbImageData": bookmark.thumbImageData ?? bookmark.zimFile?.faviconData ?? Data()
             ]
         }
         UserDefaults(suiteName: "group.kiwix")?.set(bookmarksData, forKey: "bookmarks")

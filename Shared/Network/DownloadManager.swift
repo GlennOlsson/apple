@@ -66,7 +66,7 @@ class DownloadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URL
         do {
             let database = try Realm(configuration: Realm.defaultConfig)
             guard let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID),
-                let remoteURLString = zimFile.remoteURL, var url = URL(string: remoteURLString) else {return}
+                let remoteURLString = zimFile.downloadURL, var url = URL(string: remoteURLString) else {return}
             if url.lastPathComponent.hasSuffix(".meta4") {
                 url = url.deletingPathExtension()
             }

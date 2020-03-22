@@ -134,7 +134,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
                         return 0
                     }
                 }()
-                self.actions = (zimFile.fileSize <= freespace ? [[.downloadWifiOnly, .downloadWifiAndCellular]] : [[.downloadSpaceNotEnough]], [])
+                self.actions = ((zimFile.size.value ?? 0) <= freespace ? [[.downloadWifiOnly, .downloadWifiAndCellular]] : [[.downloadSpaceNotEnough]], [])
 
                 // when state changed from local to cloud, and when split view controller is collapsed
                 // pop this view controller
@@ -220,7 +220,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
         case .hasIndex:
             cell.textLabel?.text = NSLocalizedString("Index", comment: "Book Detail Cell")
             cell.detailTextLabel?.text = {
-                if zimFile.hasEmbeddedIndex {
+                if zimFile.hasIndex {
                     return NSLocalizedString("Yes", comment: "Book Detail Cell, has index")
                 } else {
                     return NSLocalizedString("No", comment: "Book Detail Cell, has index")
@@ -228,13 +228,13 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
             }()
         case .hasPicture:
             cell.textLabel?.text = NSLocalizedString("Pictures", comment: "Book Detail Cell")
-            cell.detailTextLabel?.text = zimFile.hasPicture ? NSLocalizedString("Yes", comment: "Book Detail Cell, has picture") : NSLocalizedString("No", comment: "Book Detail Cell, does not have picture")
+            cell.detailTextLabel?.text = zimFile.hasPictures ? NSLocalizedString("Yes", comment: "Book Detail Cell, has picture") : NSLocalizedString("No", comment: "Book Detail Cell, does not have picture")
         case .articleCount:
             cell.textLabel?.text = NSLocalizedString("Article Count", comment: "Book Detail Cell")
-            cell.detailTextLabel?.text = countFormatter.string(from: NSNumber(value: zimFile.articleCount))
+            cell.detailTextLabel?.text = countFormatter.string(from: NSNumber(value: zimFile.articleCount.value ?? 0))
         case .mediaCount:
             cell.textLabel?.text = NSLocalizedString("Media Count", comment: "Book Detail Cell")
-            cell.detailTextLabel?.text = countFormatter.string(from: NSNumber(value: zimFile.mediaCount))
+            cell.detailTextLabel?.text = countFormatter.string(from: NSNumber(value: zimFile.mediaCount.value ?? 0))
         case .creator:
             cell.textLabel?.text = NSLocalizedString("Creator", comment: "Book Detail Cell")
             cell.detailTextLabel?.text = zimFile.creator
@@ -363,7 +363,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
                         ZimMultiReader.shared.remove(id: zimFile.id)
                         let database = try Realm(configuration: Realm.defaultConfig)
                         try database.write {
-                            if zimFile.remoteURL != nil {
+                            if zimFile.downloadURL != nil {
                                 zimFile.state = .cloud
                                 zimFile.openInPlaceURLBookmark = nil
                             } else {

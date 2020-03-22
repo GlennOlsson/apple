@@ -14,38 +14,75 @@
 import RealmSwift
 
 class ZimFile: Object {
-    // MARK: -  Properties
     
-    @objc dynamic var id = ""
-    @objc dynamic var pid: String?
+    // MARK: -  non-optional properties
     
-    @objc dynamic var title = ""
-    @objc dynamic var bookDescription = ""
+    @objc dynamic var id: String = ""
+    @objc dynamic var name: String = ""
+    @objc dynamic var title: String = ""
+    @objc dynamic var fileDescription: String = ""
     @objc dynamic var languageCode: String = ""
-    @objc dynamic var creationDate = Date()
+    @objc dynamic var categoryRaw: String = Category.other.rawValue
     
-    @objc dynamic var creator = ""
-    @objc dynamic var publisher = ""
+    // MARK: -  optional properties
     
-    @objc dynamic var articleCount: Int64 = 0
-    @objc dynamic var mediaCount: Int64 = 0
-    @objc dynamic var fileSize: Int64 = 0
+    @objc dynamic var creator: String?
+    @objc dynamic var publisher: String?
+    @objc dynamic var creationDate: Date?
+    @objc dynamic var downloadURL: String?
+    @objc dynamic var faviconURL: String?
+    @objc dynamic var faviconData: Data?
+    let size = RealmOptional<Int64>()
+    let articleCount = RealmOptional<Int64>()
+    let mediaCount = RealmOptional<Int64>()
     
-    @objc dynamic var hasPicture = false
-    @objc dynamic var hasEmbeddedIndex = false
+    // MARK: -  additional Properties
+    
+    @objc dynamic var hasDetails = false
+    @objc dynamic var hasIndex = false
+    @objc dynamic var hasPictures = false
+    @objc dynamic var hasVideos = false
     @objc dynamic var includeInSearch = true
     
-    @objc dynamic var icon = Data()
-    
-    @objc dynamic var remoteURL: String?
     @objc dynamic var openInPlaceURLBookmark: Data?
-    
     @objc dynamic var stateRaw = State.cloud.rawValue
-    @objc dynamic var categoryRaw = Category.other.rawValue
-    
     @objc dynamic var downloadTotalBytesWritten: Int64 = 0
     @objc dynamic var downloadResumeData: Data?
     @objc dynamic var downloadErrorDescription: String?
+  
+//    old definition
+//    @objc dynamic var id = ""
+//    @objc dynamic var pid: String? -> name: String
+//
+//    @objc dynamic var title = ""
+//    @objc dynamic var bookDescription = "" -> fileDescription
+//    @objc dynamic var languageCode: String = ""
+//    @objc dynamic var creationDate = Date()
+//
+//    @objc dynamic var creator = ""
+//    @objc dynamic var publisher = ""
+//
+//    @objc dynamic var articleCount: Int64 = 0 -> RealmOptional<Int64>
+//    @objc dynamic var mediaCount: Int64 = 0 -> RealmOptional<Int64>
+//    @objc dynamic var fileSize: Int64 = 0 -> size
+//
+//    @objc dynamic var hasPicture = false -> hasPictures
+//    @objc dynamic var hasEmbeddedIndex = false -> hasIndex
+//    @objc dynamic var includeInSearch = true
+//
+//    @objc dynamic var icon = Data() -> faviconData
+//
+//    @objc dynamic var remoteURL: String? -> downloadURL
+//    @objc dynamic var openInPlaceURLBookmark: Data?
+//
+//    @objc dynamic var stateRaw = State.cloud.rawValue
+//    @objc dynamic var categoryRaw = Category.other.rawValue
+//
+//    @objc dynamic var downloadTotalBytesWritten: Int64 = 0
+//    @objc dynamic var downloadResumeData: Data?
+//    @objc dynamic var downloadErrorDescription: String?
+    
+    // MARK: -  read only properties
     
     var state: State {
         get { return State(rawValue:stateRaw) ?? .cloud }
@@ -77,7 +114,7 @@ class ZimFile: Object {
     }
     
     override static func indexedProperties() -> [String] {
-        return ["pid", "title", "languageCode", "creationDate", "includeInSearch", "categoryRaw", "stateRaw"]
+        return ["name", "title", "languageCode", "categoryRaw", "creationDate", "includeInSearch", "stateRaw"]
     }
     
     // MARK: - Descriptions
@@ -86,14 +123,19 @@ class ZimFile: Object {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yyyy"
         formatter.dateStyle = .medium
-        return formatter.string(from: creationDate)
+        if let date = creationDate {
+            return formatter.string(from: date)
+        } else {
+            return ""
+        }
     }
     
     var fileSizeDescription: String {
-        return ByteCountFormatter.string(fromByteCount: fileSize, countStyle: .file)
+        return ByteCountFormatter.string(fromByteCount: size.value ?? 0, countStyle: .file)
     }
     
     var articleCountDescription: String {
+        let articleCount = self.articleCount.value ?? 0
         return NumberAbbrevationFormatter.string(from: Int(articleCount)) + (articleCount > 1 ? " articles" : " article")
     }
     

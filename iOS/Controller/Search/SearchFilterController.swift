@@ -139,7 +139,7 @@ class SearchFilterController: UIViewController, UITableViewDelegate, UITableView
         guard let zimFile = zimFiles?[indexPath.row] else {return}
         cell.titleLabel.text = zimFile.title
         cell.detailLabel.text = [zimFile.fileSizeDescription, zimFile.creationDateDescription, zimFile.articleCountDescription].joined(separator: ", ")
-        cell.thumbImageView.image = UIImage(data: zimFile.icon) ?? #imageLiteral(resourceName: "GenericZimFile")
+        cell.thumbImageView.image = UIImage(data: zimFile.faviconData ?? Data()) ?? #imageLiteral(resourceName: "GenericZimFile")
         cell.thumbImageView.contentMode = .scaleAspectFit
         cell.accessoryType = zimFile.includeInSearch ? .checkmark : .none
     }

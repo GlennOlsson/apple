@@ -268,7 +268,7 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
         guard let zimFile = localZimFiles?[row] else {return}
         cell.titleLabel.text = zimFile.title
         cell.detailLabel.text = [zimFile.fileSizeDescription, zimFile.creationDateDescription, zimFile.articleCountDescription].joined(separator: ", ")
-        cell.thumbImageView.image = UIImage(data: zimFile.icon) ?? #imageLiteral(resourceName: "GenericZimFile")
+        cell.thumbImageView.image = UIImage(data: zimFile.faviconData ?? Data()) ?? #imageLiteral(resourceName: "GenericZimFile")
         cell.thumbImageView.contentMode = .scaleAspectFit
         cell.accessoryType = .disclosureIndicator
     }
@@ -282,7 +282,7 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
                 return NSLocalizedString("Queued", comment: "Zim file download state")
             case .downloadInProgress:
                 let written = ByteCountFormatter.string(fromByteCount: zimFile.downloadTotalBytesWritten, countStyle: .file)
-                let percent = NumberFormatter.localizedString(from: NSNumber(value: Double(zimFile.downloadTotalBytesWritten) / Double(zimFile.fileSize)), number: .percent)
+                let percent = NumberFormatter.localizedString(from: NSNumber(value: Double(zimFile.downloadTotalBytesWritten) / Double(zimFile.size.value ?? 1)), number: .percent)
                 return "\(written) / \(zimFile.fileSizeDescription), \(percent)"
             case .downloadPaused:
                 return NSLocalizedString("Paused", comment: "Zim file download state")
@@ -292,7 +292,7 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
                 return nil
             }
         }()
-        cell.thumbImageView.image = UIImage(data: zimFile.icon) ?? #imageLiteral(resourceName: "GenericZimFile")
+        cell.thumbImageView.image = UIImage(data: zimFile.faviconData ?? Data()) ?? #imageLiteral(resourceName: "GenericZimFile")
         cell.thumbImageView.contentMode = .scaleAspectFit
         cell.accessoryType = .disclosureIndicator
     }

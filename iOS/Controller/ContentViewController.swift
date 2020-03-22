@@ -326,7 +326,7 @@ class ContentViewController: UIViewController, UISearchControllerDelegate, WebVi
                     bookmark.snippet = snippet
                     group.leave()
                 })
-                if zimFile.hasPicture {
+                if zimFile.hasPictures {
                     group.enter()
                     webViewController.extractImageURLs(completion: { (urls) in
                         bookmark.thumbImagePath = urls.first?.path

@@ -24,7 +24,7 @@ extension ZimFileProcessing {
     
     func update(zimFile: ZimFile, meta: [String: Any]) {
         if let pid = meta["name"] as? String {
-            zimFile.pid = pid
+            zimFile.name = pid
         }
         
         if let title = meta["title"] as? String {
@@ -32,7 +32,7 @@ extension ZimFileProcessing {
         }
         
         if let description = meta["description"] as? String {
-            zimFile.bookDescription = description
+            zimFile.fileDescription = description
         }
         
         if let languageCode = meta["language"] as? String {
@@ -57,39 +57,39 @@ extension ZimFileProcessing {
         }
         
         if let articleCount = meta["articleCount"] as? String, let count = Int64(articleCount) {
-            zimFile.articleCount = count
+            zimFile.articleCount.value = count
         } else if let articleCount = meta["articleCount"] as? NSNumber {
-            zimFile.articleCount = articleCount.int64Value
+            zimFile.articleCount.value = articleCount.int64Value
         }
         
         if let mediaCount = meta["mediaCount"] as? String, let count = Int64(mediaCount) {
-            zimFile.mediaCount = count
+            zimFile.mediaCount.value = count
         } else if let mediaCount = meta["mediaCount"] as? NSNumber {
-            zimFile.mediaCount = mediaCount.int64Value
+            zimFile.mediaCount.value = mediaCount.int64Value
         }
         
         if let size = meta["size"] as? String, let kiloByteCount = Int64(size) {
-            zimFile.fileSize = kiloByteCount * 1024
+            zimFile.size.value = kiloByteCount * 1024
         } else if let byteCount = meta["fileSize"] as? NSNumber {
-            zimFile.fileSize = byteCount.int64Value
+            zimFile.size.value = byteCount.int64Value
         }
         
         if let tags = meta["tags"] as? String {
-            zimFile.hasPicture = !tags.contains("nopic")
-            zimFile.hasEmbeddedIndex = tags.contains("_ftindex")
+            zimFile.hasPictures = !tags.contains("nopic")
+            zimFile.hasIndex = tags.contains("_ftindex")
         }
         
         if let favIcon = meta["favicon"] as? String, let icon = Data(base64Encoded: favIcon, options: .ignoreUnknownCharacters) {
-            zimFile.icon = icon
+            zimFile.faviconData = icon
         } else if let icon = meta["icon"] as? Data {
-            zimFile.icon = icon
+            zimFile.faviconData = icon
         }
         
         if let urlString = meta["url"] as? String, var url = URL(string: urlString) {
             if url.lastPathComponent == "meta4" {
                 url = url.deletingLastPathComponent()
             }
-            zimFile.remoteURL = url.absoluteString
+            zimFile.downloadURL = url.absoluteString
         }
         
         zimFile.category = {
