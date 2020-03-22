@@ -37,7 +37,7 @@
         
         SAFE_READ(self.creator, [NSString stringWithUTF8String:self.book->getCreator().c_str()]);
         SAFE_READ(self.publisher, [NSString stringWithUTF8String:self.book->getPublisher().c_str()]);
-        SAFE_READ(self.url, [NSURL URLWithString:[NSString stringWithUTF8String:self.book->getUrl().c_str()]]);
+        SAFE_READ(self.downloadURL, [NSURL URLWithString:[NSString stringWithUTF8String:self.book->getUrl().c_str()]]);
         SAFE_READ(self.faviconURL,
                   [NSURL URLWithString:[NSString stringWithUTF8String:self.book->getFaviconUrl().c_str()]]);
         SAFE_READ(self.size, [NSNumber numberWithUnsignedLongLong:self.book->getSize()]);

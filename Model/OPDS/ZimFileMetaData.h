@@ -20,7 +20,7 @@
 // nullable attributes
 @property (nonatomic, strong, nullable) NSString *creator;
 @property (nonatomic, strong, nullable) NSString *publisher;
-@property (nonatomic, strong, nullable) NSURL *url;
+@property (nonatomic, strong, nullable) NSURL *downloadURL;
 @property (nonatomic, strong, nullable) NSURL *faviconURL;
 @property (nonatomic, strong, nullable) NSNumber *size;
 @property (nonatomic, strong, nullable) NSNumber *articleCount;

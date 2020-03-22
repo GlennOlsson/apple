@@ -123,23 +123,23 @@ class OPDSRefreshOperation: Operation {
     
     private func update(zimFile: ZimFile, meta: ZimFileMetaData) {
         zimFile.id = meta.identifier
-        zimFile.title = meta.title
         zimFile.pid = meta.name
+        zimFile.title = meta.title
         zimFile.bookDescription = meta.fileDescription
+        zimFile.languageCode = meta.languageCode
         
-//        zimFile.category = meta.category
-//        zimFile.languageCode = meta.languageCode
-//        zimFile.creationDate =
-//        zimFile.creator = meta.creator
-//        zimFile.publisher = meta.publisher
+        zimFile.creator = meta.creator ?? ""
+        zimFile.publisher = meta.publisher ?? ""
+        zimFile.remoteURL = meta.downloadURL?.absoluteString
+        zimFile.fileSize = meta.size?.int64Value ?? 0
+        zimFile.articleCount = meta.articleCount?.int64Value ?? 0
+        zimFile.mediaCount = meta.mediaCount?.int64Value ?? 0
         
-//        zimFile.remoteURL = meta.url
-        // icon url
+        zimFile.hasPicture = meta.hasPictures
         
-//        zimFile.fileSize = meta.size
-//        zimFile.articleCount = meta.articleCount
-//        zimFile.mediaCount = meta.mediaCount
-        
+        zimFile.categoryRaw = meta.category
+        zimFile.creationDate = meta.creationDate ?? Date()
+        zimFile.icon = meta.favicon ?? Data()
     }
 }
 
