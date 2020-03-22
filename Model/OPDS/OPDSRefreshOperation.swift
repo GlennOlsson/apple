@@ -28,7 +28,8 @@ class OPDSRefreshOperation: Operation {
             
             // refresh the library
             let data = try fetchData()
-            let parser = parseData(data: data)
+            let parser = OPDSStreamParser()
+            try parser.parse(data: data)
             try processData(parser: parser)
             
             // apply language filter if library has never been refreshed
@@ -83,17 +84,13 @@ class OPDSRefreshOperation: Operation {
         }
     }
     
-    private func parseData(data: Data) -> OPDSStreamParser {
-        let parser = OPDSStreamParser(data: data)
-        parser.parse()
-        return parser
-    }
     
-    /// Process the parsed OPDS stream
+    /// /// Process the parsed OPDS stream
+    /// - Parameter parser: OPDSStreamParser
     /// - Throws: OPDSRefreshError, the error happened during OPDS stream processing
     private func processData(parser: OPDSStreamParser) throws {
-        let zimFileIDs = Set(parser.zimFileIDs)
         do {
+            let zimFileIDs = Set(parser.zimFileIDs)
             let database = try Realm(configuration: Realm.defaultConfig)
             try database.write {
                 // remove old zimFiles

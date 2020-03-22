@@ -13,10 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OPDSStreamParser : NSObject
 
-@property (nonatomic, retain) NSData *data;
-
-- (nonnull instancetype)initWithData:(NSData *_Nonnull)data;
-- (void)parse;
+- (nonnull instancetype)init;
+- (BOOL)parseData:(nonnull NSData *)data error:(NSError **)error NS_REFINED_FOR_SWIFT;
 - (nonnull NSArray *)getZimFileIDs NS_REFINED_FOR_SWIFT;
 - (nullable ZimFileMetaData *)getZimFileMetaData:(nonnull NSString *)identifier NS_REFINED_FOR_SWIFT;
 
