@@ -157,7 +157,7 @@ class ZimFile: Object {
         
         case ted
         case vikidia
-        case stackExchange
+        case stackExchange = "stack_exchange"
         
         case other
         

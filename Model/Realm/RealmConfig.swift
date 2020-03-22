@@ -25,7 +25,24 @@ extension Realm {
             try? FileManager.default.moveItem(at: oldDatabaseURL, to: newDatabaseURL)
         }
         
-        var config = Realm.Configuration(schemaVersion: 1)
+        var config = Realm.Configuration(
+            schemaVersion: 2,
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < 2) {
+                    migration.enumerateObjects(ofType: ZimFile.className()) { oldObject, newObject in
+                        newObject?["name"] = oldObject?["pid"] ?? ""
+                        newObject?["fileDescription"] = oldObject?["bookDescription"] ?? ""
+                        newObject?["hasPictures"] = oldObject?["hasPicture"] ?? false
+                        newObject?["hasIndex"] = oldObject?["hasEmbeddedIndex"] ?? false
+                        newObject?["faviconData"] = oldObject?["icon"]
+                        if let categoryRaw = oldObject?["categoryRaw"] as? String {
+                            if categoryRaw == "stackExchange" { newObject?["categoryRaw"] = "stack_exchange" }
+                            if categoryRaw == "ted" { newObject?["categoryRaw"] = "other" }
+                        }
+                    }
+                }
+            }
+        )
         config.fileURL = newDatabaseURL
         return config
     }()
