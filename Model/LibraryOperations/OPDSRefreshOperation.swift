@@ -18,7 +18,7 @@ class OPDSRefreshOperation: LibraryBaseOperation {
     private(set) var error: OPDSRefreshError?
     
     override init() {
-        self.updateExisting = false
+        self.updateExisting = true
         super.init()
     }
     
@@ -107,6 +107,7 @@ class OPDSRefreshOperation: LibraryBaseOperation {
                         if updateExisting { updateZimFile(zimFile, meta: meta) }
                     } else {
                         let zimFile = ZimFile()
+                        zimFile.id = meta.identifier
                         updateZimFile(zimFile, meta: meta)
                         zimFile.state = .cloud
                         database.add(zimFile)

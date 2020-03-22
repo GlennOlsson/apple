@@ -8,75 +8,64 @@
 
 #import "ZimFileMetaData.h"
 #include "book.h"
+#include "otherTools.h"
 
 #define SAFE_READ(X, Y) try {X = Y;} catch (std::exception) {X = nil;}
 #define SAFE_READ_BOOL(X, Y) try {X = Y;} catch (std::exception) {X = false;}
-
-@interface ZimFileMetaData ()
-
-@property (assign) kiwix::Book *book;
-
-@end
 
 @implementation ZimFileMetaData
 
 - (nullable instancetype)initWithBook:(void *)book {
     self = [super init];
     if (self) {
-        self.book = (kiwix::Book *)book;
+        kiwix::Book *_book = static_cast<kiwix::Book *>(book);
         
         try {
-            self.identifier = [NSString stringWithUTF8String:self.book->getId().c_str()];
-            self.title = [NSString stringWithUTF8String:self.book->getTitle().c_str()];
-            self.name = [NSString stringWithUTF8String:self.book->getName().c_str()];
-            self.fileDescription = [NSString stringWithUTF8String:self.book->getDescription().c_str()];
-            self.languageCode = [NSString stringWithUTF8String:self.book->getLanguage().c_str()];
+            self.identifier = [NSString stringWithUTF8String:_book->getId().c_str()];
+            self.title = [NSString stringWithUTF8String:_book->getTitle().c_str()];
+            self.name = [NSString stringWithUTF8String:_book->getName().c_str()];
+            self.fileDescription = [NSString stringWithUTF8String:_book->getDescription().c_str()];
+            self.languageCode = [self getLanguageCodeFromBook:_book];
+            self.category = [self getCategoryFromBook:_book];
         } catch (std::exception) {
             return nil;
         }
         
-        SAFE_READ(self.creator, [NSString stringWithUTF8String:self.book->getCreator().c_str()]);
-        SAFE_READ(self.publisher, [NSString stringWithUTF8String:self.book->getPublisher().c_str()]);
-        SAFE_READ(self.downloadURL, [NSURL URLWithString:[NSString stringWithUTF8String:self.book->getUrl().c_str()]]);
+        SAFE_READ(self.creator, [NSString stringWithUTF8String:_book->getCreator().c_str()]);
+        SAFE_READ(self.publisher, [NSString stringWithUTF8String:_book->getPublisher().c_str()]);
+        SAFE_READ(self.creationDate, [self getCreationDateFromBook:_book]);
+        SAFE_READ(self.downloadURL, [NSURL URLWithString:[NSString stringWithUTF8String:_book->getUrl().c_str()]]);
         SAFE_READ(self.faviconURL,
-                  [NSURL URLWithString:[NSString stringWithUTF8String:self.book->getFaviconUrl().c_str()]]);
-        SAFE_READ(self.size, [NSNumber numberWithUnsignedLongLong:self.book->getSize()]);
-        SAFE_READ(self.articleCount, [NSNumber numberWithUnsignedLongLong:self.book->getArticleCount()]);
-        SAFE_READ(self.mediaCount, [NSNumber numberWithUnsignedLongLong:self.book->getMediaCount()]);
+                  [NSURL URLWithString:[NSString stringWithUTF8String:_book->getFaviconUrl().c_str()]]);
+        SAFE_READ(self.size, [NSNumber numberWithUnsignedLongLong:_book->getSize()]);
+        SAFE_READ(self.articleCount, [NSNumber numberWithUnsignedLongLong:_book->getArticleCount()]);
+        SAFE_READ(self.mediaCount, [NSNumber numberWithUnsignedLongLong:_book->getMediaCount()]);
         
-        SAFE_READ_BOOL(self.hasDetails, self.book->getTagBool("details"));
-        SAFE_READ_BOOL(self.hasIndex, self.book->getTagBool("ftindex"));
-        SAFE_READ_BOOL(self.hasPictures, self.book->getTagBool("pictures"));
-        SAFE_READ_BOOL(self.hasVideos, self.book->getTagBool("videos"));
+        SAFE_READ_BOOL(self.hasDetails, _book->getTagBool("details"));
+        SAFE_READ_BOOL(self.hasIndex, _book->getTagBool("ftindex"));
+        SAFE_READ_BOOL(self.hasPictures, _book->getTagBool("pictures"));
+        SAFE_READ_BOOL(self.hasVideos, _book->getTagBool("videos"));
     }
     return self;
 }
 
-- (NSString *)category {
+- (NSString *)getLanguageCodeFromBook:(kiwix::Book *)book {
+    NSString *code = [NSString stringWithUTF8String:book->getLanguage().c_str()];
+    return [NSLocale canonicalLanguageIdentifierFromString:code];
+}
+
+- (NSString *)getCategoryFromBook:(kiwix::Book *)book {
     try {
-        return [NSString stringWithUTF8String:self.book->getTagStr("category").c_str()];
+        return [NSString stringWithUTF8String:book->getTagStr("category").c_str()];
     } catch (std::out_of_range e) {
         return @"other";
     }
 }
 
-- (NSDate *)creationDate {
-    try {
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = @"yyyy-MM-dd";
-        return [formatter dateFromString:[NSString stringWithUTF8String:self.book->getDate().c_str()]];
-    } catch (std::out_of_range e) {
-        return nil;
-    }
-}
-
-- (NSData *)favicon {
-    try {
-        std::string favicon = self.book->getFavicon();
-        return [NSData dataWithBytes:favicon.c_str() length:favicon.length()];
-    } catch (std::out_of_range e) {
-        return nil;
-    }
+- (NSDate *)getCreationDateFromBook:(kiwix::Book *)book {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd";
+    return [formatter dateFromString:[NSString stringWithUTF8String:book->getDate().c_str()]];
 }
 
 @end
