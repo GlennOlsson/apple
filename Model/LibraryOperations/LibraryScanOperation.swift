@@ -9,7 +9,7 @@
 import RealmSwift
 import SwiftyUserDefaults
 
-class LibraryScanOperation: Operation, ZimFileProcessing {
+class LibraryScanOperation: LibraryBaseOperation {
     let urls: [URL]
     private let documentDirectoryURL = try! FileManager.default.url(
         for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -88,19 +88,19 @@ class LibraryScanOperation: Operation, ZimFileProcessing {
             
             try database.write {
                 for zimFileID in zimFileIDs {
-                    let zimFile: ZimFile = {
+                    guard let zimFile: ZimFile = {
                         if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
                             // if zim file already exist in database, simply set its state to local
                             return zimFile
                         } else {
                             // if zim file does not exist in database, create the object
-//                            let meta = ZimMultiReader.shared.getMetaData
-//                            let meta = ZimMultiReader.shared.getMetaData(id: zimFileID)
-//                            let zimFile = self.create(database: database, id: zimFileID, meta: meta)
+                            guard let meta = ZimMultiReader.shared.getZimFileMetaData(id: zimFileID) else { return nil }
                             let zimFile = ZimFile()
+                            self.updateZimFile(zimFile, meta: meta)
+                            database.add(zimFile)
                             return zimFile
                         }
-                    }()
+                    }() else { continue }
                     if zimFile.state != .local { zimFile.state = .local }
                     if zimFile.openInPlaceURLBookmark == nil { saveBookmarkData(zimFile: zimFile) }
                 }

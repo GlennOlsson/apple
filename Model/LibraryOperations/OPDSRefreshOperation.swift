@@ -10,7 +10,7 @@ import os
 import RealmSwift
 import SwiftyUserDefaults
 
-class OPDSRefreshOperation: Operation {
+class OPDSRefreshOperation: LibraryBaseOperation {
     let progress = Progress(totalUnitCount: 10)
     private let updateExisting: Bool
     
@@ -103,12 +103,11 @@ class OPDSRefreshOperation: Operation {
                 // upsert new and existing zimFiles
                 for zimFileID in zimFileIDs {
                     guard let meta = parser.getZimFileMetaData(id: zimFileID) else { continue }
-                    print(meta.identifier)
                     if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
-                        if updateExisting { update(zimFile: zimFile, meta: meta) }
+                        if updateExisting { updateZimFile(zimFile, meta: meta) }
                     } else {
                         let zimFile = ZimFile()
-                        update(zimFile: zimFile, meta: meta)
+                        updateZimFile(zimFile, meta: meta)
                         zimFile.state = .cloud
                         database.add(zimFile)
                         self.hasUpdates = true
@@ -118,27 +117,6 @@ class OPDSRefreshOperation: Operation {
         } catch {
             throw OPDSRefreshError.process
         }
-    }
-    
-    private func update(zimFile: ZimFile, meta: ZimFileMetaData) {
-        zimFile.id = meta.identifier
-        zimFile.pid = meta.name
-        zimFile.title = meta.title
-        zimFile.bookDescription = meta.fileDescription
-        zimFile.languageCode = meta.languageCode
-        
-        zimFile.creator = meta.creator ?? ""
-        zimFile.publisher = meta.publisher ?? ""
-        zimFile.remoteURL = meta.downloadURL?.absoluteString
-        zimFile.fileSize = meta.size?.int64Value ?? 0
-        zimFile.articleCount = meta.articleCount?.int64Value ?? 0
-        zimFile.mediaCount = meta.mediaCount?.int64Value ?? 0
-        
-        zimFile.hasPicture = meta.hasPictures
-        
-        zimFile.categoryRaw = meta.category
-        zimFile.creationDate = meta.creationDate ?? Date()
-        zimFile.icon = meta.favicon ?? Data()
     }
 }
 

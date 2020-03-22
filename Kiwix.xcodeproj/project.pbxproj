@@ -90,6 +90,7 @@
 		9769716F2415D15900B260F6 /* OPDSStreamParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9769716E2415D15900B260F6 /* OPDSStreamParser.mm */; };
 		976971722415D84700B260F6 /* OPDSStreamParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976971712415D84700B260F6 /* OPDSStreamParser.swift */; };
 		976971752415D95800B260F6 /* ZimFileMetaData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 976971742415D95800B260F6 /* ZimFileMetaData.mm */; };
+		976AA32D2427BE4A00576A96 /* LibraryBaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976AA32C2427BE4A00576A96 /* LibraryBaseOperation.swift */; };
 		9779E7A22379230F0058DC98 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9779E7A12379230F0058DC98 /* SearchController.swift */; };
 		977D7BB41F9E6A43009A8703 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB11F9E6A43009A8703 /* SearchResult.swift */; };
 		977D7BB61F9E6A43009A8703 /* ZimMultiReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 977D7BB21F9E6A43009A8703 /* ZimMultiReader.mm */; };
@@ -592,6 +593,7 @@
 		976971712415D84700B260F6 /* OPDSStreamParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDSStreamParser.swift; sourceTree = "<group>"; };
 		976971732415D95800B260F6 /* ZimFileMetaData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZimFileMetaData.h; sourceTree = "<group>"; };
 		976971742415D95800B260F6 /* ZimFileMetaData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ZimFileMetaData.mm; sourceTree = "<group>"; };
+		976AA32C2427BE4A00576A96 /* LibraryBaseOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBaseOperation.swift; sourceTree = "<group>"; };
 		9779E7A12379230F0058DC98 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		977D7BB01F9E6A43009A8703 /* ZimMultiReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZimMultiReader.h; sourceTree = "<group>"; };
 		977D7BB11F9E6A43009A8703 /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
@@ -1330,6 +1332,7 @@
 		976AA32B2427BD3300576A96 /* LibraryOperations */ = {
 			isa = PBXGroup;
 			children = (
+				976AA32C2427BE4A00576A96 /* LibraryBaseOperation.swift */,
 				977F983D1F9E43EC002ABFCE /* LibraryScanOperation.swift */,
 				97697162241592B400B260F6 /* OPDSRefreshOperation.swift */,
 			);
@@ -1846,6 +1849,7 @@
 				979FD159201679C5007B5290 /* SearchResultsListController.swift in Sources */,
 				972B66602007F9F7003F5365 /* WebKitWebController.swift in Sources */,
 				9763EDC9201FCA6900F3A6D5 /* SettingWebController.swift in Sources */,
+				976AA32D2427BE4A00576A96 /* LibraryBaseOperation.swift in Sources */,
 				97AC121320878F8B004779D1 /* SearchResultsController.swift in Sources */,
 				977F983E1F9E43EC002ABFCE /* LibraryScanOperation.swift in Sources */,
 				97028C54201A7D43001259CB /* WebViewControllerProtocols.swift in Sources */,
