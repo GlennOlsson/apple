@@ -25,8 +25,6 @@
 
 @implementation OPDSStreamParser
 
-kiwix::Library *library = nullptr;
-
 - (instancetype _Nonnull)init {
     self = [super init];
     if (self) {
@@ -36,14 +34,14 @@ kiwix::Library *library = nullptr;
 }
 
 - (void)dealloc {
-    delete library;
+    delete self.library;
 }
 
 - (BOOL)parseData:(nonnull NSData *)data error:(NSError **)error {
     try {
         NSString *streamContent = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         
-        std::shared_ptr<kiwix::Manager> manager = std::make_shared<kiwix::Manager>(library);
+        std::shared_ptr<kiwix::Manager> manager = std::make_shared<kiwix::Manager>(self.library);
         manager->readOpds([streamContent cStringUsingEncoding:NSUTF8StringEncoding],
                           [@"https://library.kiwix.org" cStringUsingEncoding:NSUTF8StringEncoding]);
         return true;
@@ -54,8 +52,8 @@ kiwix::Library *library = nullptr;
 }
 
 - (NSArray *)getZimFileIDs {
-    NSMutableArray *identifiers = [[NSMutableArray alloc] initWithCapacity:library->getBookCount(false, true)];
-    for (auto identifierC: library->getBooksIds()) {
+    NSMutableArray *identifiers = [[NSMutableArray alloc] initWithCapacity:self.library->getBookCount(false, true)];
+    for (auto identifierC: self.library->getBooksIds()) {
         NSString *identifier = [NSString stringWithUTF8String:identifierC.c_str()];
         [identifiers addObject:identifier];
     }
@@ -64,7 +62,7 @@ kiwix::Library *library = nullptr;
 
 - (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
     std::string identifierC = [identifier cStringUsingEncoding:NSUTF8StringEncoding];
-    kiwix::Book book = library->getBookById(identifierC);
+    kiwix::Book book = self.library->getBookById(identifierC);
     return [[ZimFileMetaData alloc] initWithBook: &book];
 }
 
