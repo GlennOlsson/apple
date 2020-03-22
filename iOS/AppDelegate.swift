@@ -80,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, DirectoryMonitorDelegate 
     }
     
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        let operation = LibraryRefreshOperation(updateExisting: false)
+        let operation = OPDSRefreshOperation(updateExisting: false)
         operation.completionBlock = {
             if operation.error != nil {
                 completionHandler(operation.hasUpdates ? .newData : .noData)

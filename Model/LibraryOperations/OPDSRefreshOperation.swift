@@ -19,8 +19,12 @@ class OPDSRefreshOperation: LibraryBaseOperation {
     private(set) var deletionCount = 0
     private(set) var error: OPDSRefreshError?
     
-    override init() {
-        self.updateExisting = true
+    var hasUpdates: Bool {
+        return additionCount > 0 || updateCount > 0 || deletionCount > 0
+    }
+    
+    init(updateExisting: Bool = false) {
+        self.updateExisting = updateExisting
         super.init()
     }
     

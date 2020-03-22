@@ -116,7 +116,7 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
     }
 
     @objc func refreshControlPulled() {
-        let operation = LibraryRefreshOperation(updateExisting: true)
+        let operation = OPDSRefreshOperation(updateExisting: true)
         operation.completionBlock = {
             OperationQueue.main.addOperation({
                 self.refreshControl.endRefreshing()
