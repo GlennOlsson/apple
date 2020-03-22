@@ -145,16 +145,6 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     }
 }
 
-- (NSDictionary *)getMetaData:(NSString *_Nonnull)zimFileID {
-    auto found = self.readers.find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
-        return nil;
-    } else {
-        std::shared_ptr<kiwix::Reader> reader = found->second;
-        return [ZimMultiReader getMetaDataWithReader:reader];
-    }
-}
-
 - (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
     auto found = self.readers.find([identifier cStringUsingEncoding:NSUTF8StringEncoding]);
     if (found == self.readers.end()) {
