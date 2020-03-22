@@ -791,7 +791,7 @@
 			children = (
 				976AA32A2427B72400576A96 /* Entities */,
 				977D7BAF1F9E6A43009A8703 /* ZimMultiReader */,
-				9769715F24158DE100B260F6 /* OPDS */,
+				9769715F24158DE100B260F6 /* OPDSStreamParser */,
 				976AA32B2427BD3300576A96 /* LibraryOperations */,
 				970EC39C23BCE2B5008DCA27 /* BookmarkManager.swift */,
 				970EC3A023BCEC84008DCA27 /* Parser.swift */,
@@ -1308,14 +1308,14 @@
 			path = Storyboard;
 			sourceTree = "<group>";
 		};
-		9769715F24158DE100B260F6 /* OPDS */ = {
+		9769715F24158DE100B260F6 /* OPDSStreamParser */ = {
 			isa = PBXGroup;
 			children = (
 				9769716D2415D15900B260F6 /* OPDSStreamParser.h */,
 				9769716E2415D15900B260F6 /* OPDSStreamParser.mm */,
 				976971712415D84700B260F6 /* OPDSStreamParser.swift */,
 			);
-			path = OPDS;
+			path = OPDSStreamParser;
 			sourceTree = "<group>";
 		};
 		976AA32A2427B72400576A96 /* Entities */ = {
