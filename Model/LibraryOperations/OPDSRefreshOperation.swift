@@ -14,7 +14,9 @@ class OPDSRefreshOperation: LibraryBaseOperation {
     let progress = Progress(totalUnitCount: 10)
     private let updateExisting: Bool
     
-    private(set) var hasUpdates = false
+    private(set) var additionCount = 0
+    private(set) var updateCount = 0
+    private(set) var deletionCount = 0
     private(set) var error: OPDSRefreshError?
     
     override init() {
@@ -40,13 +42,17 @@ class OPDSRefreshOperation: LibraryBaseOperation {
             // update last library refresh time
             Defaults[.libraryLastRefreshTime] = Date()
             
-            os_log("OPDSRefreshOperation success, zim files count: %d",
+            os_log("OPDSRefreshOperation success -- addition: %d, update: %d, deletion: %d, total: %d",
                    log: Log.OPDS,
                    type: .default,
+                   additionCount,
+                   updateCount,
+                   deletionCount,
                    parser.zimFileIDs.count)
             
         } catch let error as OPDSRefreshError {
             self.error = error
+            os_log("OPDSRefreshOperation error: %s", log: Log.OPDS, type: .error, error.localizedDescription)
         } catch {
             os_log("OPDSRefreshOperation unknown error: %s", log: Log.OPDS, type: .error, error.localizedDescription)
         }
@@ -97,21 +103,24 @@ class OPDSRefreshOperation: LibraryBaseOperation {
                                             zimFileIDs, ZimFile.State.cloud.rawValue)
                 database.objects(ZimFile.self).filter(predicate).forEach({
                     database.delete($0)
-                    self.hasUpdates = true
+                    self.deletionCount += 1
                 })
 
                 // upsert new and existing zimFiles
                 for zimFileID in zimFileIDs {
                     guard let meta = parser.getZimFileMetaData(id: zimFileID) else { continue }
                     if let zimFile = database.object(ofType: ZimFile.self, forPrimaryKey: zimFileID) {
-                        if updateExisting { updateZimFile(zimFile, meta: meta) }
+                        if updateExisting {
+                            updateZimFile(zimFile, meta: meta)
+                            self.updateCount += 1
+                        }
                     } else {
                         let zimFile = ZimFile()
                         zimFile.id = meta.identifier
                         updateZimFile(zimFile, meta: meta)
                         zimFile.state = .cloud
                         database.add(zimFile)
-                        self.hasUpdates = true
+                        self.additionCount += 1
                     }
                 }
             }
