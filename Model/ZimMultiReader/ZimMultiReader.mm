@@ -12,6 +12,8 @@
 #include "reader.h"
 #include "searcher.h"
 #import "ZimMultiReader.h"
+#import "ZimFileMetaData.h"
+#include "book.h"
 
 @interface ZimMultiReader ()
 
@@ -150,6 +152,17 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     } else {
         std::shared_ptr<kiwix::Reader> reader = found->second;
         return [ZimMultiReader getMetaDataWithReader:reader];
+    }
+}
+
+- (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
+    auto found = self.readers.find([identifier cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers.end()) {
+        return nil;
+    } else {
+        kiwix::Book book = kiwix::Book();
+        book.update(*found->second);
+        return [[ZimFileMetaData alloc] initWithBook: &book];
     }
 }
 

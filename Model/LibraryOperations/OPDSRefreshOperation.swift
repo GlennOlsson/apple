@@ -84,7 +84,6 @@ class OPDSRefreshOperation: Operation {
         }
     }
     
-    
     /// /// Process the parsed OPDS stream
     /// - Parameter parser: OPDSStreamParser
     /// - Throws: OPDSRefreshError, the error happened during OPDS stream processing

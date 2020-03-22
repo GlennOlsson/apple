@@ -94,8 +94,10 @@ class LibraryScanOperation: Operation, ZimFileProcessing {
                             return zimFile
                         } else {
                             // if zim file does not exist in database, create the object
-                            let meta = ZimMultiReader.shared.getMetaData(id: zimFileID)
-                            let zimFile = self.create(database: database, id: zimFileID, meta: meta)
+//                            let meta = ZimMultiReader.shared.getMetaData
+//                            let meta = ZimMultiReader.shared.getMetaData(id: zimFileID)
+//                            let zimFile = self.create(database: database, id: zimFileID, meta: meta)
+                            let zimFile = ZimFile()
                             return zimFile
                         }
                     }()
