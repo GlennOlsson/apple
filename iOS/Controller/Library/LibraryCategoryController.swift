@@ -38,18 +38,18 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         view = tableView
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 44
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.separatorInset = UIEdgeInsets(top: 0, left: tableView.separatorInset.left + 42, bottom: 0, right: 0)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Globe"), style: .plain, target: self, action: #selector(languageFilterBottonTapped(sender:)))
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = true
-        }
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Globe"),
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(languageFilterBottonTapped(sender:)))
         configureLanguageCodes()
     }
     
@@ -60,9 +60,6 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if #available(iOS 11.0, *) {
-            navigationItem.largeTitleDisplayMode = .always
-        }
         if !Defaults[.libraryHasShownLanguageFilterAlert] {
             showAdditionalLanguageAlert()
         }
@@ -140,7 +137,9 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func configure(cell: TableViewCell, indexPath: IndexPath, animated: Bool = false) {
-        guard let zimFiles = zimFiles?.filter("languageCode == %@", languageCodes[indexPath.section]).sorted(byKeyPath: "title", ascending: true) else {return}
+        guard let zimFiles = zimFiles?
+            .filter("languageCode == %@", languageCodes[indexPath.section])
+            .sorted(byKeyPath: "title", ascending: true) else {return}
         let zimFile = zimFiles[indexPath.row]
         cell.titleLabel.text = zimFile.title
         cell.detailLabel.text = [
