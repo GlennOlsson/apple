@@ -213,7 +213,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
             cell.detailTextLabel?.text = Locale.current.localizedString(forLanguageCode: zimFile.languageCode)
         case .size:
             cell.textLabel?.text = NSLocalizedString("Size", comment: "Book Detail Cell")
-            cell.detailTextLabel?.text = zimFile.fileSizeDescription
+            cell.detailTextLabel?.text = zimFile.sizeDescription
         case .date:
             cell.textLabel?.text = NSLocalizedString("Date", comment: "Book Detail Cell")
             cell.detailTextLabel?.text = zimFile.creationDateDescription

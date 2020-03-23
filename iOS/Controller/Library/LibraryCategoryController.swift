@@ -143,7 +143,9 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         guard let zimFiles = zimFiles?.filter("languageCode == %@", languageCodes[indexPath.section]).sorted(byKeyPath: "title", ascending: true) else {return}
         let zimFile = zimFiles[indexPath.row]
         cell.titleLabel.text = zimFile.title
-        cell.detailLabel.text = [zimFile.fileSizeDescription, zimFile.creationDateDescription, zimFile.articleCountDescription].joined(separator: ", ")
+        cell.detailLabel.text = [
+            zimFile.sizeDescription, zimFile.creationDateDescription, zimFile.articleCountDescription
+        ].compactMap({ $0 }).joined(separator: ", ")
         cell.thumbImageView.image = UIImage(data: zimFile.faviconData ?? Data()) ?? #imageLiteral(resourceName: "GenericZimFile")
         cell.thumbImageView.contentMode = .scaleAspectFit
         cell.accessoryType = .disclosureIndicator

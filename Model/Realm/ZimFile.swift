@@ -119,26 +119,24 @@ class ZimFile: Object {
     
     // MARK: - Descriptions
     
-    var creationDateDescription: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy"
-        formatter.dateStyle = .medium
-        if let date = creationDate {
-            return formatter.string(from: date)
-        } else {
-            return ""
-        }
-    }
-    
-    var fileSizeDescription: String {
-        return ByteCountFormatter.string(fromByteCount: size.value ?? 0, countStyle: .file)
-    }
-    
-    var articleCountDescription: String {
-        let articleCount = self.articleCount.value ?? 0
+    var articleCountDescription: String? {
+        guard let articleCount = self.articleCount.value else { return nil }
         return NumberAbbrevationFormatter.string(from: Int(articleCount)) + (articleCount > 1 ? " articles" : " article")
     }
     
+    var creationDateDescription: String? {
+        guard let creationDate = creationDate else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"
+        formatter.dateStyle = .medium
+        return formatter.string(from: creationDate)
+    }
+    
+    var sizeDescription: String? {
+        guard let size = size.value else { return nil }
+        return ByteCountFormatter.string(fromByteCount: size, countStyle: .file)
+    }
+
     // MARK: - Type Definition
     
     enum State: String {
@@ -226,7 +224,7 @@ class ZimFile: Object {
             let abs = Swift.abs(value)
             guard abs >= 1000 else {return "\(sign)\(abs)"}
             let exp = Int(log10(Double(abs)) / log10(1000))
-            let units = ["K","M","G","T","P","E"]
+            let units = ["K", "M", "G", "T", "P", "E"]
             let rounded = round(10 * Double(abs) / pow(1000.0,Double(exp))) / 10;
             return "\(sign)\(rounded)\(units[exp-1])"
         }
