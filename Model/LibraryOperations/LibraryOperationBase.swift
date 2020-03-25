@@ -36,7 +36,7 @@ class LibraryBaseOperation: Operation {
         zimFile.publisher = meta.publisher ?? ""
         zimFile.creationDate = meta.creationDate ?? Date()
         zimFile.downloadURL = meta.downloadURL?.absoluteString
-        zimFile.faviconURL = meta.downloadURL?.absoluteString
+        zimFile.faviconURL = meta.faviconURL?.absoluteString
         zimFile.size.value = meta.size?.int64Value
         zimFile.articleCount.value = meta.articleCount?.int64Value
         zimFile.mediaCount.value = meta.mediaCount?.int64Value
