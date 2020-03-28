@@ -88,15 +88,13 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         notificationTokens.removeAll()
         for (languageCode, result) in results {
             let notification = result.observe { [unowned self] changes in
-                guard case let .update(_, deletions, insertions, updates) = changes,
+                guard case let .update(_, deletions, insertions, _) = changes,
                     let sectionIndex = self.languageCodes.firstIndex(of: languageCode) else { return }
                 self.tableView.performBatchUpdates({
                     let deletionIndexes = deletions.map({ IndexPath(row: $0, section: sectionIndex) })
                     let insertIndexes = insertions.map({ IndexPath(row: $0, section: sectionIndex) })
-                    let updateIndexes = updates.map({ IndexPath(row: $0, section: sectionIndex) })
                     self.tableView.deleteRows(at: deletionIndexes, with: .fade)
                     self.tableView.insertRows(at: insertIndexes, with: .fade)
-                    self.tableView.reloadRows(at: updateIndexes, with: .fade)
                 })
             }
             notificationTokens[languageCode] = notification
@@ -157,7 +155,7 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         if let data = zimFile.faviconData, let image = UIImage(data: data) {
             cell.thumbImageView.image = image
         } else if let faviconURL = URL(string: zimFile.faviconURL ?? "") {
-            print("fetch: \(faviconURL)")
+            cell.thumbImageView.image = #imageLiteral(resourceName: "GenericZimFile")
             let task = URLSession.shared.dataTask(with: faviconURL) { (data, _, _) in
                 guard let data = data, let image = UIImage(data: data) else { return }
                 do {
