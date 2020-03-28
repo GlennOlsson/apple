@@ -15,19 +15,16 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     private let category: ZimFile.Category
     
     private var languageCodes = [String]()
-    private let zimFiles: Results<ZimFile>?
-    private var changeToken: NotificationToken?
+    private var results = [String: Results<ZimFile>]()
+    private var notificationTokens = [String: NotificationToken]()
     
     // MARK: - Override
     
     init(category: ZimFile.Category) {
         self.category = category
-        
-        let database = try? Realm(configuration: Realm.defaultConfig)
-        self.zimFiles = database?.objects(ZimFile.self).filter("categoryRaw = %@", category.rawValue)
-        
         super.init(nibName: nil, bundle: nil)
         title = category.description
+        configureResults()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -46,120 +43,148 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Globe"),
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(languageFilterBottonTapped(sender:)))
-        configureLanguageCodes()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: #imageLiteral(resourceName: "Globe"), style: .plain, target: self, action: #selector(languageFilterBottonTapped(sender:)))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureChangeToken()
+        configureNotificationTokens()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !Defaults[.libraryHasShownLanguageFilterAlert] {
             showAdditionalLanguageAlert()
         }
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        changeToken = nil
+        notificationTokens.removeAll()
     }
     
-    // MARK: -
+    // MARK: - Configurations
     
-    private func configureLanguageCodes() {
-        let visibleLanguageCodes = Defaults[.libraryFilterLanguageCodes]
-        languageCodes = zimFiles?.distinct(by: ["languageCode"]).map({ $0.languageCode }) ?? []
-        if visibleLanguageCodes.count > 0 {languageCodes = languageCodes.filter({ visibleLanguageCodes.contains($0) })}
-        languageCodes = languageCodes.filter({ (self.zimFiles?.filter("languageCode == %@", $0).count ?? 0) > 0 })
-            .sorted(by: { (code0, code1) -> Bool in
-                guard let name0 = Locale.current.localizedString(forLanguageCode: code0),
-                    let name1 = Locale.current.localizedString(forLanguageCode: code1) else {return code0 < code1}
-                return name0 < name1
-            })
-    }
-    
-    private func configureChangeToken() {
-        changeToken = zimFiles?.observe({ (changes) in
-            switch changes {
-            case .initial, .update:
-                self.tableView.reloadData()
-            default:
-                break
+    private func configureResults() {
+        results.removeAll()
+        languageCodes = Defaults[.libraryFilterLanguageCodes].sorted(by: { (code0, code1) -> Bool in
+            guard let name0 = Locale.current.localizedString(forLanguageCode: code0),
+                let name1 = Locale.current.localizedString(forLanguageCode: code1) else {return code0 < code1}
+            return name0 < name1
+        })
+        do {
+            let database = try Realm(configuration: Realm.defaultConfig)
+            for languageCode in languageCodes {
+                let zimFiles = database.objects(ZimFile.self)
+                    .filter("categoryRaw = %@ AND languageCode == %@", category.rawValue, languageCode)
+                    .sorted(byKeyPath: "title")
+                results[languageCode] = zimFiles
             }
-        })        
+        } catch {}
+    }
+    
+    private func configureNotificationTokens() {
+        notificationTokens.removeAll()
+        for (languageCode, result) in results {
+            let notification = result.observe { [unowned self] changes in
+                guard case let .update(_, deletions, insertions, updates) = changes,
+                    let sectionIndex = self.languageCodes.firstIndex(of: languageCode) else { return }
+                self.tableView.performBatchUpdates({
+                    let deletionIndexes = deletions.map({ IndexPath(row: $0, section: sectionIndex) })
+                    let insertIndexes = insertions.map({ IndexPath(row: $0, section: sectionIndex) })
+                    let updateIndexes = updates.map({ IndexPath(row: $0, section: sectionIndex) })
+                    self.tableView.deleteRows(at: deletionIndexes, with: .fade)
+                    self.tableView.insertRows(at: insertIndexes, with: .fade)
+                    self.tableView.reloadRows(at: updateIndexes, with: .fade)
+                })
+            }
+            notificationTokens[languageCode] = notification
+        }
     }
     
     private func showAdditionalLanguageAlert() {
-        let alert = UIAlertController(title: NSLocalizedString("More Languages", comment: "Library: Additional Language Alert"),
-                                      message: NSLocalizedString("Contents in other languages are also available. Visit language filter at the top of the screen to enable them.",
-                                                                 comment: "Library: Additional Language Alert"),
-                                      preferredStyle: .alert)
+        let title = NSLocalizedString("More Languages", comment: "Library: Additional Language Alert")
+        let message = NSLocalizedString("Contents in other languages are also available. Visit language filter at the top of the screen to enable them.",
+                                        comment: "Library: Additional Language Alert")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
         Defaults[.libraryHasShownLanguageFilterAlert] = true
     }
-    
+
     @objc func languageFilterBottonTapped(sender: UIBarButtonItem) {
         let controller = LibraryLanguageController()
         controller.dismissCallback = {[unowned self] in
-            self.configureLanguageCodes()
-            self.configureChangeToken()
+            self.configureResults()
+            self.configureNotificationTokens()
+            self.tableView.reloadData()
         }
-        changeToken = nil
-        
         let navigation = UINavigationController(rootViewController: controller)
         navigation.modalPresentationStyle = .popover
         navigation.popoverPresentationController?.barButtonItem = sender
         present(navigation, animated: true, completion: nil)
     }
-    
+
     // MARK: - UITableViewDataSource & Delagates
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return languageCodes.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let zimFiles = zimFiles?.filter("languageCode == %@", languageCodes[section]) else {return 0}
-        return zimFiles.count
+        guard let result = results[languageCodes[section]] else { return 0 }
+        return result.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableViewCell
         configure(cell: cell, indexPath: indexPath)
         return cell
     }
-    
+
     func configure(cell: TableViewCell, indexPath: IndexPath, animated: Bool = false) {
-        guard let zimFiles = zimFiles?
-            .filter("languageCode == %@", languageCodes[indexPath.section])
-            .sorted(byKeyPath: "title", ascending: true) else {return}
-        let zimFile = zimFiles[indexPath.row]
+        guard let result = results[languageCodes[indexPath.section]] else { return }
+        let zimFile = result[indexPath.row]
         cell.titleLabel.text = zimFile.title
         cell.detailLabel.text = [
             zimFile.sizeDescription, zimFile.creationDateDescription, zimFile.articleCountDescription
         ].compactMap({ $0 }).joined(separator: ", ")
-        cell.thumbImageView.image = UIImage(data: zimFile.faviconData ?? Data()) ?? #imageLiteral(resourceName: "GenericZimFile")
-        cell.thumbImageView.contentMode = .scaleAspectFit
         cell.accessoryType = .disclosureIndicator
+        cell.thumbImageView.contentMode = .scaleAspectFit
+        
+        let zimfileReference = ThreadSafeReference(to: zimFile)
+        if let data = zimFile.faviconData, let image = UIImage(data: data) {
+            cell.thumbImageView.image = image
+        } else if let faviconURL = URL(string: zimFile.faviconURL ?? "") {
+            print("fetch: \(faviconURL)")
+            let task = URLSession.shared.dataTask(with: faviconURL) { (data, _, _) in
+                guard let data = data, let image = UIImage(data: data) else { return }
+                do {
+                    let database = try Realm(configuration: Realm.defaultConfig)
+                    guard let zimFile = database.resolve(zimfileReference) else { return }
+                    try database.write {
+                        zimFile.faviconData = data
+                    }
+                } catch {}
+                DispatchQueue.main.async {
+                    guard let cell = self.tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
+                    cell.thumbImageView.image = image
+                }
+            }
+            task.resume()
+        }
     }
-    
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return Locale.current.localizedString(forLanguageCode: languageCodes[section])
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        guard let zimFiles = zimFiles?.filter("languageCode == %@", languageCodes[indexPath.section]).sorted(byKeyPath: "title", ascending: true) else {return}
-        let zimFile = zimFiles[indexPath.row]
+        defer { tableView.deselectRow(at: indexPath, animated: true) }
+        guard let result = results[languageCodes[indexPath.section]] else { return }
+        let zimFile = result[indexPath.row]
         let controller = LibraryZimFileDetailController(zimFile: zimFile)
         navigationController?.pushViewController(controller, animated: true)
     }
 }
-

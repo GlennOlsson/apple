@@ -150,7 +150,7 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
     }
 
     private func configureChangeToken() {
-        localZimFilesChangeToken = localZimFiles?.observe({ [unowned self] (changes) in
+        localZimFilesChangeToken = localZimFiles?.observe({ [unowned self] changes in
             guard case let .update(results, deletions, insertions, updates) = changes else {return}
             self.localZimFilesCount = results.count
             self.tableView.performBatchUpdates({
