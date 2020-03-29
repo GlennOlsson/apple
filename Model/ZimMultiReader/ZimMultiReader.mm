@@ -39,6 +39,10 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     return self;
 }
 
+- (void)dealloc {
+    delete self.readers;
+}
+
 - (NSArray *)getReaderIdentifiers {
     return [self.fileURLs allKeys];
 }
@@ -71,15 +75,7 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
         // store file URL
         NSString *identifierObjC = [NSString stringWithCString:identifier.c_str() encoding:NSUTF8StringEncoding];
         self.fileURLs[identifierObjC] = url;
-    } catch (std::exception e) {
-
-    }
-    
-    std::vector<std::string> keys;
-    for(auto kv : *self.readers) {
-        keys.push_back(kv.first);
-        printf("%s", kv.first.c_str());
-    }
+    } catch (std::exception e) { }
 }
 
 - (void)removeReaderByID:(NSString *)bookID {
