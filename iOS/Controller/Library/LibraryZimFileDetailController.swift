@@ -102,7 +102,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
     // MARK: -
 
     private func configureZimFileObservers() {
-        zimFileObserver = zimFile.observe { (change) in
+        zimFileObserver = zimFile.observe { [unowned self] change in
             switch change {
             case .deleted:
                 guard let splitViewController = self.splitViewController,
