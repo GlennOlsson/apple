@@ -96,6 +96,7 @@ class LibraryScanOperation: LibraryBaseOperation {
                             // if zim file does not exist in database, create the object
                             guard let meta = ZimMultiReader.shared.getZimFileMetaData(id: zimFileID) else { return nil }
                             let zimFile = ZimFile()
+                            zimFile.id = meta.identifier
                             self.updateZimFile(zimFile, meta: meta)
                             database.add(zimFile)
                             return zimFile

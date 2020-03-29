@@ -24,6 +24,7 @@
 @property (nonatomic, strong, nullable) NSDate *creationDate;
 @property (nonatomic, strong, nullable) NSURL *downloadURL;
 @property (nonatomic, strong, nullable) NSURL *faviconURL;
+@property (nonatomic, strong, nullable) NSData *faviconData;
 @property (nonatomic, strong, nullable) NSNumber *size;
 @property (nonatomic, strong, nullable) NSNumber *articleCount;
 @property (nonatomic, strong, nullable) NSNumber *mediaCount;

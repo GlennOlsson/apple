@@ -34,9 +34,9 @@
         SAFE_READ(self.creator, [NSString stringWithUTF8String:_book->getCreator().c_str()]);
         SAFE_READ(self.publisher, [NSString stringWithUTF8String:_book->getPublisher().c_str()]);
         SAFE_READ(self.creationDate, [self getCreationDateFromBook:_book]);
-        SAFE_READ(self.downloadURL, [NSURL URLWithString:[NSString stringWithUTF8String:_book->getUrl().c_str()]]);
-        SAFE_READ(self.faviconURL,
-                  [NSURL URLWithString:[NSString stringWithUTF8String:_book->getFaviconUrl().c_str()]]);
+        SAFE_READ(self.downloadURL, [self getURL:_book->getUrl()]);
+        SAFE_READ(self.faviconURL, [self getURL:_book->getFaviconUrl()]);
+        SAFE_READ(self.faviconData, [self getFaviconData:_book]);
         SAFE_READ(self.size, [NSNumber numberWithUnsignedLongLong:_book->getSize()]);
         SAFE_READ(self.articleCount, [NSNumber numberWithUnsignedLongLong:_book->getArticleCount()]);
         SAFE_READ(self.mediaCount, [NSNumber numberWithUnsignedLongLong:_book->getMediaCount()]);
@@ -66,6 +66,17 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd";
     return [formatter dateFromString:[NSString stringWithUTF8String:book->getDate().c_str()]];
+}
+
+- (NSURL *)getURL:(std::string)urlString {
+    if (urlString.length() == 0) { return nil; }
+    return [NSURL URLWithString:[NSString stringWithUTF8String:urlString.c_str()]];
+}
+
+- (NSData *)getFaviconData:(kiwix::Book *)book {
+    if (self.faviconURL != nil) { return nil; }
+    std::string favicon = book->getFavicon();
+    return [NSData dataWithBytes:favicon.c_str() length:favicon.length()];
 }
 
 @end

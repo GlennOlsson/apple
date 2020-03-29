@@ -55,7 +55,7 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 
 - (void)addReaderByURL:(NSURL *)url {
     try {
-        // if url does not ends with "zim" or "zimaa", skip it
+        // if url does not ends with "zim", skip it
         NSString *pathExtension = [[url pathExtension] lowercaseString];
         if (![pathExtension isEqualToString:@"zim"]) {
             return;
