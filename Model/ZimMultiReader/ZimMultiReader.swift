@@ -29,8 +29,14 @@ extension ZimMultiReader {
         return (data, mime, length)
     }
     
+    // MARK: - meta data
+    
     func getZimFileMetaData(id: String) -> ZimFileMetaData? {
         return __getZimFileMetaData(id)
+    }
+    
+    static func getMetaData(url: URL) -> ZimFileMetaData? {
+        return __getMetaData(withFileURL: url)
     }
     
     func getMainPageURL(zimFileID: String) -> URL? {
@@ -58,9 +64,5 @@ extension ZimMultiReader {
                 let path = suggestion["path"] else {return nil}
             return SearchResult(zimFileID: id, path: path, title: title)
         }
-    }
-    
-    static func getMetaData(url: URL) -> [String: Any]? {
-        return __getMetaData(withFileURL: url) as? [String: Any]
     }
 }
