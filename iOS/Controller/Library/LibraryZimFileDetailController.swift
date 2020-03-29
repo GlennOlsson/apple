@@ -16,7 +16,13 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
     private let documentDirectoryURL = try! FileManager.default.url(
         for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
 
-    private let tableView = UITableView(frame: .zero, style: .grouped)
+    private let tableView = UITableView(frame: .zero, style: {
+        if #available(iOS 13, *) {
+            return .insetGrouped
+        } else {
+            return .grouped
+        }
+    }())
     var actions = (top: [[Action]](), bottom: [[Action]]()) {
         didSet(oldValue) {
             /*
@@ -43,7 +49,7 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
     }
     private let metas: [[Meta]] = [
         [.language, .size, .date],
-        [.hasPicture, .hasIndex],
+        [.hasPicture, .hasIndex, .hasVideo, .hasDetail],
         [.articleCount, .mediaCount],
         [.creator, .publisher],
         [.id]
@@ -229,6 +235,12 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
         case .hasPicture:
             cell.textLabel?.text = NSLocalizedString("Pictures", comment: "Book Detail Cell")
             cell.detailTextLabel?.text = zimFile.hasPictures ? NSLocalizedString("Yes", comment: "Book Detail Cell, has picture") : NSLocalizedString("No", comment: "Book Detail Cell, does not have picture")
+        case .hasVideo:
+            cell.textLabel?.text = NSLocalizedString("Videos", comment: "Book Detail Cell")
+            cell.detailTextLabel?.text = zimFile.hasVideos ? NSLocalizedString("Yes", comment: "Book Detail Cell, has videos") : NSLocalizedString("No", comment: "Book Detail Cell, does not have videos")
+        case .hasDetail:
+            cell.textLabel?.text = NSLocalizedString("Details", comment: "Book Detail Cell")
+            cell.detailTextLabel?.text = zimFile.hasDetails ? NSLocalizedString("Yes", comment: "Book Detail Cell, has details") : NSLocalizedString("No", comment: "Book Detail Cell, does not have details")
         case .articleCount:
             cell.textLabel?.text = NSLocalizedString("Article Count", comment: "Book Detail Cell")
             cell.detailTextLabel?.text = countFormatter.string(from: NSNumber(value: zimFile.articleCount.value ?? 0))
@@ -285,7 +297,10 @@ class LibraryZimFileDetailController: UIViewController, UITableViewDataSource, U
     // MARK: - Type Definition
 
     enum Meta: String {
-        case language, size, date, hasIndex, hasPicture, articleCount, mediaCount, creator, publisher, id
+        case language, size, date
+        case hasIndex, hasPicture, hasVideo, hasDetail
+        case articleCount, mediaCount
+        case creator, publisher, id
     }
 
     enum Action: CustomStringConvertible {
