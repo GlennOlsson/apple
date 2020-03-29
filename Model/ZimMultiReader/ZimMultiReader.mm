@@ -17,7 +17,7 @@
 
 @interface ZimMultiReader ()
 
-@property (assign) std::unordered_map<std::string, std::shared_ptr<kiwix::Reader>> readers;
+@property (assign) std::unordered_map<std::string, std::shared_ptr<kiwix::Reader>> *readers;
 @property (strong) NSMutableDictionary *fileURLs; // [ID: FileURL]
 
 @end
@@ -32,7 +32,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.readers.reserve(10);
+        self.readers = new std::unordered_map<std::string, std::shared_ptr<kiwix::Reader>>();
+        self.readers->reserve(10);
         self.fileURLs = [[NSMutableDictionary alloc] initWithCapacity:10];
     }
     return self;
@@ -65,7 +66,7 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
         [url startAccessingSecurityScopedResource];
         std::shared_ptr<kiwix::Reader> reader = std::make_shared<kiwix::Reader>([url fileSystemRepresentation]);
         std::string identifier = reader->getId();
-        self.readers.insert(std::make_pair(identifier, reader));
+        self.readers->insert(std::make_pair(identifier, reader));
         
         // store file URL
         NSString *identifierObjC = [NSString stringWithCString:identifier.c_str() encoding:NSUTF8StringEncoding];
@@ -73,11 +74,17 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     } catch (std::exception e) {
 
     }
+    
+    std::vector<std::string> keys;
+    for(auto kv : *self.readers) {
+        keys.push_back(kv.first);
+        printf("%s", kv.first.c_str());
+    }
 }
 
 - (void)removeReaderByID:(NSString *)bookID {
     std::string identifier = [bookID cStringUsingEncoding:NSUTF8StringEncoding];
-    self.readers.erase(identifier);
+    self.readers->erase(identifier);
     [self.fileURLs[bookID] stopAccessingSecurityScopedResource];
     [self.fileURLs removeObjectForKey:bookID];
 }
@@ -95,8 +102,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 # pragma mark - check redirection
 
 - (NSString *_Nullable)getRedirectedPath:(NSString *_Nonnull)zimFileID contentPath:(NSString *_Nonnull)contentPath {
-    auto found = self.readers.find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
+    auto found = self.readers->find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers->end()) {
         return nil;
     } else {
         std::shared_ptr<kiwix::Reader> reader = found->second;
@@ -125,8 +132,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 # pragma mark - get content
 
 - (NSDictionary *)getContent:(NSString *)zimFileID contentURL:(NSString *)contentURL {
-    auto found = self.readers.find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
+    auto found = self.readers->find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers->end()) {
         return nil;
     } else {
         std::shared_ptr<kiwix::Reader> reader = found->second;
@@ -146,8 +153,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 }
 
 - (ZimFileMetaData *)getZimFileMetaData:(NSString *)identifier {
-    auto found = self.readers.find([identifier cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
+    auto found = self.readers->find([identifier cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers->end()) {
         return nil;
     } else {
         kiwix::Book book = kiwix::Book();
@@ -159,8 +166,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
 # pragma mark - URL handling
 
 - (NSString *)getMainPagePath:(NSString *)bookID {
-    auto found = self.readers.find([bookID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
+    auto found = self.readers->find([bookID cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers->end()) {
         return nil;
     } else {
         std::shared_ptr<kiwix::Reader> reader = found->second;
@@ -176,7 +183,7 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     searcher = new kiwix::Searcher;
     std::string searchTextC = [searchText cStringUsingEncoding:NSUTF8StringEncoding];
     
-    for(auto iter: self.readers) {
+    for(auto iter: *self.readers) {
         NSString *identifier = [NSString stringWithCString:iter.first.c_str() encoding:NSUTF8StringEncoding];
         if (![zimFileIDs containsObject:identifier]) {
             continue;
@@ -220,8 +227,8 @@ NSMutableArray *searcherZimIDs = [[NSMutableArray alloc] init];
     std::string searchTermC = [searchText cStringUsingEncoding:NSUTF8StringEncoding];
     NSMutableArray *suggestions = [[NSMutableArray alloc] init];
     
-    auto found = self.readers.find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (found == self.readers.end()) {
+    auto found = self.readers->find([zimFileID cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (found == self.readers->end()) {
         return suggestions;
     } else {
         std::shared_ptr<kiwix::Reader> reader = found->second;
