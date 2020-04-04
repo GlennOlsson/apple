@@ -17,6 +17,7 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     private var languageCodes = [String]()
     private var results = [String: Results<ZimFile>]()
     private var notificationTokens = [String: NotificationToken]()
+    private var languageCodeObserver: DefaultsDisposable?
     
     // MARK: - Override
     
@@ -24,7 +25,12 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         self.category = category
         super.init(nibName: nil, bundle: nil)
         title = category.description
-        configureResults()
+        self.languageCodeObserver = Defaults.observe(
+            key: .libraryFilterLanguageCodes, options: [.initial, .new]
+        ) { [unowned self] update in
+            guard let languageCodes = update.newValue else { return }
+            self.configure(selectedLanguages: languageCodes)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -43,22 +49,13 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: #imageLiteral(resourceName: "Globe"), style: .plain, target: self, action: #selector(languageFilterBottonTapped(sender:)))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureNotificationTokens()
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if !Defaults[.libraryHasShownLanguageFilterAlert] {
-            showAdditionalLanguageAlert()
-        }
-    }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         notificationTokens.removeAll()
@@ -66,21 +63,48 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     
     // MARK: - Configurations
     
-    private func configureResults() {
+    private func configure(selectedLanguages: [String]) {
+        notificationTokens.removeAll()
         results.removeAll()
-        languageCodes = Defaults[.libraryFilterLanguageCodes].sorted(by: { (code0, code1) -> Bool in
-            guard let name0 = Locale.current.localizedString(forLanguageCode: code0),
-                let name1 = Locale.current.localizedString(forLanguageCode: code1) else {return code0 < code1}
-            return name0 < name1
-        })
+        
         do {
             let database = try Realm(configuration: Realm.defaultConfig)
-            for languageCode in languageCodes {
-                let zimFiles = database.objects(ZimFile.self)
-                    .filter("categoryRaw = %@ AND languageCode == %@", category.rawValue, languageCode)
-                    .sorted(byKeyPath: "title")
-                results[languageCode] = zimFiles
+            
+            // select lanuages
+            if selectedLanguages.count > 0 {
+                languageCodes = selectedLanguages
+            } else {
+                let zimFiles = database.objects(ZimFile.self).filter("categoryRaw = %@", category.rawValue)
+                languageCodes = zimFiles.distinct(by: ["languageCode"]).map({ $0.languageCode })
             }
+            languageCodes.sort { (code0, code1) -> Bool in
+                guard let name0 = Locale.current.localizedString(forLanguageCode: code0),
+                    let name1 = Locale.current.localizedString(forLanguageCode: code1) else {return code0 < code1}
+                return name0 < name1
+            }
+            
+            // fetch results or show empty view
+            if languageCodes.count > 0 {
+                for languageCode in languageCodes {
+                    let zimFiles = database.objects(ZimFile.self)
+                        .filter("categoryRaw = %@ AND languageCode == %@", category.rawValue, languageCode)
+                        .sorted(byKeyPath: "title")
+                    results[languageCode] = zimFiles
+                }
+                configureNotificationTokens()
+                
+                navigationItem.rightBarButtonItem = UIBarButtonItem(
+                    image: #imageLiteral(resourceName: "Globe"), style: .plain, target: self, action: #selector(languageFilterBottonTapped(sender:)))
+                if !Defaults[.libraryHasShownLanguageFilterAlert] {
+                    showAdditionalLanguageAlert()
+                }
+            } else {
+                navigationItem.rightBarButtonItem = nil
+                tableView.backgroundView = EmptyBackgroundView()
+                tableView.separatorStyle = .none
+            }
+            
+            tableView.reloadData()
         } catch {}
     }
     
@@ -112,13 +136,7 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
     }
 
     @objc func languageFilterBottonTapped(sender: UIBarButtonItem) {
-        let controller = LibraryLanguageController()
-        controller.dismissCallback = {[unowned self] in
-            self.configureResults()
-            self.configureNotificationTokens()
-            self.tableView.reloadData()
-        }
-        let navigation = UINavigationController(rootViewController: controller)
+        let navigation = UINavigationController(rootViewController: LibraryLanguageController())
         navigation.modalPresentationStyle = .popover
         navigation.popoverPresentationController?.barButtonItem = sender
         present(navigation, animated: true, completion: nil)
