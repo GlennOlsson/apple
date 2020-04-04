@@ -119,7 +119,7 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
                 guard let sectionIndex = self.languageCodes.firstIndex(of: languageCode) else { return }
                 switch changes {
                 case .initial:
-                    self.tableView.reloadSections([sectionIndex], with: .automatic)
+                    self.tableView.reloadSections([sectionIndex], with: .none)
                 case .update(_, let deletions, let insertions, _):
                     self.tableView.performBatchUpdates({
                         let deletionIndexes = deletions.map({ IndexPath(row: $0, section: sectionIndex) })
