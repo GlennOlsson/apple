@@ -95,12 +95,16 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
                 
                 navigationItem.rightBarButtonItem = UIBarButtonItem(
                     image: #imageLiteral(resourceName: "Globe"), style: .plain, target: self, action: #selector(languageFilterBottonTapped(sender:)))
-                if !Defaults[.libraryHasShownLanguageFilterAlert] {
-                    showAdditionalLanguageAlert()
-                }
+                tableView.backgroundView = nil
+                tableView.separatorStyle = .singleLine
+                showAdditionalLanguageAlertIfNeeded()
             } else {
                 navigationItem.rightBarButtonItem = nil
-                tableView.backgroundView = EmptyBackgroundView()
+                tableView.backgroundView = EmptyContentView(
+                    image: #imageLiteral(resourceName: "shelf"),
+                    title: "No Zim Files are Available",
+                    subtitle: "Download the offline library catalog or add some zim files from your computer."
+                )
                 tableView.separatorStyle = .none
             }
             
@@ -112,20 +116,27 @@ class LibraryCategoryController: UIViewController, UITableViewDataSource, UITabl
         notificationTokens.removeAll()
         for (languageCode, result) in results {
             let notification = result.observe { [unowned self] changes in
-                guard case let .update(_, deletions, insertions, _) = changes,
-                    let sectionIndex = self.languageCodes.firstIndex(of: languageCode) else { return }
-                self.tableView.performBatchUpdates({
-                    let deletionIndexes = deletions.map({ IndexPath(row: $0, section: sectionIndex) })
-                    let insertIndexes = insertions.map({ IndexPath(row: $0, section: sectionIndex) })
-                    self.tableView.deleteRows(at: deletionIndexes, with: .fade)
-                    self.tableView.insertRows(at: insertIndexes, with: .fade)
-                })
+                guard let sectionIndex = self.languageCodes.firstIndex(of: languageCode) else { return }
+                switch changes {
+                case .initial:
+                    self.tableView.reloadSections([sectionIndex], with: .automatic)
+                case .update(_, let deletions, let insertions, _):
+                    self.tableView.performBatchUpdates({
+                        let deletionIndexes = deletions.map({ IndexPath(row: $0, section: sectionIndex) })
+                        let insertIndexes = insertions.map({ IndexPath(row: $0, section: sectionIndex) })
+                        self.tableView.deleteRows(at: deletionIndexes, with: .fade)
+                        self.tableView.insertRows(at: insertIndexes, with: .fade)
+                    })
+                default:
+                    break
+                }
             }
             notificationTokens[languageCode] = notification
         }
     }
     
-    private func showAdditionalLanguageAlert() {
+    private func showAdditionalLanguageAlertIfNeeded() {
+        guard !Defaults[.libraryHasShownLanguageFilterAlert] else { return }
         let title = NSLocalizedString("More Languages", comment: "Library: Additional Language Alert")
         let message = NSLocalizedString("Contents in other languages are also available. Visit language filter at the top of the screen to enable them.",
                                         comment: "Library: Additional Language Alert")

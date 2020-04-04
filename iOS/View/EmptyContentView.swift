@@ -22,7 +22,11 @@ class EmptyContentView: UIView {
                 label.text = title
                 label.textAlignment = .center
                 label.adjustsFontSizeToFitWidth = true
-                label.textColor = UIColor.gray
+                if #available(iOS 13.0, *) {
+                    label.textColor = UIColor.label
+                } else {
+                    label.textColor = UIColor.gray
+                }
                 label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
                 return label
             }()
@@ -34,7 +38,11 @@ class EmptyContentView: UIView {
                     label.text = subtitle
                     label.textAlignment = .center
                     label.adjustsFontSizeToFitWidth = true
-                    label.textColor = UIColor.lightGray
+                    if #available(iOS 13.0, *) {
+                        label.textColor = UIColor.secondaryLabel
+                    } else {
+                        label.textColor = UIColor.lightGray
+                    }
                     label.font = UIFont.systemFont(ofSize: 15)
                     label.numberOfLines = 0
                     return label
