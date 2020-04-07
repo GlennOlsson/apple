@@ -54,7 +54,6 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
         view = tableView
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.refreshControl = refreshControl
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "CategoryCell")
         tableView.separatorInset = UIEdgeInsets(top: 0, left: tableView.separatorInset.left + 42, bottom: 0, right: 0)
@@ -63,10 +62,14 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         title = NSLocalizedString("Library", comment: "Library title")
+        
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.addTarget(self, action: #selector(openRefreshController), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissController))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(openDocumentPicker))
-        refreshControl.addTarget(self, action: #selector(refreshControlPulled), for: .valueChanged)
-        refreshControl.attributedTitle = NSAttributedString(string: NSLocalizedString("Pull to refresh", comment: "Library: refresh control"))
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(openDocumentPicker)),
+            UIBarButtonItem(customView: infoButton)
+        ]
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
@@ -123,6 +126,13 @@ class LibraryMasterController: UIViewController, UIDocumentPickerDelegate, UITab
     @objc func openDocumentPicker() {
         let controller = UIDocumentPickerViewController(documentTypes: ["org.openzim.zim"], in: .open)
         controller.delegate = self
+        present(controller, animated: true)
+    }
+    
+    @objc func openRefreshController(sender: UIButton) {
+        let controller = UINavigationController(rootViewController: LibraryRefreshController())
+        controller.modalPresentationStyle = .popover
+        controller.popoverPresentationController?.sourceView = sender
         present(controller, animated: true)
     }
 
